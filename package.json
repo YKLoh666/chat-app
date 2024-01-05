@@ -12,7 +12,8 @@
   "main": "index.js",
   "devDependencies": {},
   "scripts": {
-    "dev": "nodemon server/index"
+    "start": "node ./server",
+    "dev": "nodemon ./server"
   },
   "keywords": [],
   "author": "",

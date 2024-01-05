@@ -1,10 +1,27 @@
-<script>
+<script lang="ts">
+	import EyeOff from '../components/icons/EyeOff.svelte';
+	import Eye from '../components/icons/Eye.svelte';
+
 	$: uid = '';
 	$: password = '';
+	$: isShowing = false;
 	$: rmbMe = false;
 
 	const login = () => {
-		console.log('Hello');
+		let isUsername = true;
+		if (uid.includes('@')) isUsername = false; // is email
+
+		if (isUsername) {
+			// login with username
+		} else {
+			// login with email
+		}
+
+		// console.log(
+		// 	`Login Credential: ${uid} is ${
+		// 		isUsername ? 'username' : 'email'
+		// 	}, the password is ${password}`
+		// );
 	};
 </script>
 
@@ -28,16 +45,41 @@
 				<div class="form-label whitespace-nowrap">Username / Email</div>
 			</div>
 			<div class="form-group">
-				<input
-					type="password"
-					name="password"
-					id="password"
-					class="form-control"
-					placeholder=""
-					bind:value={password}
-					required
-				/>
+				{#if isShowing}
+					<input
+						type="text"
+						name="password"
+						id="password"
+						class="form-control"
+						placeholder=""
+						bind:value={password}
+						required
+					/>
+				{:else}
+					<input
+						type="password"
+						name="password"
+						id="password"
+						class="form-control"
+						placeholder=""
+						bind:value={password}
+						required
+					/>
+				{/if}
 				<div class="form-label">Password</div>
+				<div class="absolute bottom-0 p-2 w-full flex justify-end pointer-events-none">
+					<button
+						type="button"
+						class="pointer-events-auto"
+						on:click={() => (isShowing = !isShowing)}
+					>
+						{#if isShowing}
+							<Eye />
+						{:else}
+							<EyeOff />
+						{/if}
+					</button>
+				</div>
 			</div>
 			<label for="rmb-me" class="form-group px-1 pt-2 gap-2 flex items-center text-sm">
 				<input type="checkbox" name="rmb-me" id="rmb-me" bind:checked={rmbMe} />

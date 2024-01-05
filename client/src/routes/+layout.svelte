@@ -4,8 +4,6 @@
 	import '../app.css';
 
 	import { page } from '$app/stores';
-
-	export let data: LayoutData;
 </script>
 
 <Header route={$page.url.pathname} />

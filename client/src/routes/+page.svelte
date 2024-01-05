@@ -25,11 +25,11 @@
 	};
 </script>
 
-<div class="p-3 mx-auto mt-16 container flex items-center">
-	<div class="w-7/12 m-3 p-4"></div>
-	<div class="w-5/12 m-3 p-4">
+<div class="p-3 mx-auto mt-16 container block items-center lg:flex">
+	<div class="w-1/2 m-3 p-4 hidden lg:block"></div>
+	<div class="w-full mx-auto m-3 p-4 lg:w-1/2 lg:mx-3">
 		<form
-			class="mx-auto w-4/5 flex flex-col items-center border rounded p-6 pb-12 shadow-lg"
+			class="mx-auto w-full flex flex-col items-center border rounded p-0 pt-3 pb-12 shadow-lg lg:p-6 lg:w-4/6"
 			on:submit|preventDefault={login}
 		>
 			<div class="form-group">
@@ -88,9 +88,9 @@
 			<div class="form-group">
 				<input type="submit" value="Login" class="btn-primary" />
 			</div>
-			<div class="form-group flex justify-between mt-6 text-sm items-center">
-				<a href="/register" class="hover:underline text-blue-600">No account</a>
-				<a href="/ForgotPassword" class="hover:underline text-blue-600">Forgot password</a>
+			<div class="form-group flex justify-between mt-6 text-sm items-center flex-wrap">
+				<a href="/register" class="hover:underline text-red-600 mb-3">New account</a>
+				<a href="/ForgotPassword" class="hover:underline text-blue-600 mb-3">Forgot password</a>
 			</div>
 		</form>
 	</div>

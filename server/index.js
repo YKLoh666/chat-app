@@ -14,7 +14,20 @@ const server = createServer(app);
 const io = new Server(server);
 
 io.on("connection", (socket) => {
-  socket.emit();
+  console.log("user is connected");
+
+  socket.on("send message", (message) => {
+    console.log(`Received message from ${socket.id}: ${message}`);
+
+    socket.broadcast.emit("received message", {
+      sender: socket.id,
+      message,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user is disconnected");
+  });
 });
 
 app.use(handler);

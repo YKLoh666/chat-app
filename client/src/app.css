@@ -1,0 +1,77 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	html {
+		font-family: 'Roboto', system-ui, sans-serif;
+	}
+
+	.form-group {
+		@apply relative w-2/3 pt-6;
+	}
+
+	.form-control {
+		@apply border-b outline-none focus:border-neutral-400 transition-all p-2 w-full;
+	}
+
+	.form-label {
+		@apply absolute bottom-0 p-2 pointer-events-none text-neutral-400 transition-all;
+	}
+
+	.form-control:focus + .form-label,
+	.form-control:not(:placeholder-shown) + .form-label {
+		@apply bottom-9 p-0 text-black text-sm;
+	}
+
+	.btn-primary {
+		@apply w-full bg-sky-400 p-1 text-white rounded-lg text-lg cursor-pointer shadow active:shadow-[inset_0_1px_2px_-1px_#444] hover:shadow-[0_2px_8px_-1px_#38bdf8] transition-all hover:bg-[#52c5fa];
+	}
+
+	.btn-secondary {
+		@apply bg-white text-sky-500 rounded-lg px-4 py-2 cursor-pointer shadow border-2 hover:bg-blue-600 hover:shadow-sky-700 transition-all hover:text-white;
+	}
+
+	input[type='checkbox'] {
+		appearance: none;
+		background-color: #fff;
+		margin: 0;
+		color: black;
+		width: 1.15em;
+		height: 1.15em;
+		border: 0.1em solid #aaa;
+		border-radius: 0.15em;
+		box-sizing: border-box;
+		display: grid;
+		place-content: center;
+	}
+
+	input[type='checkbox']::before {
+		content: '';
+		width: 0.65em;
+		height: 0.65em;
+		transform: scale(0);
+		transition: 50ms transform ease-in-out;
+		box-shadow: inset 1em 1em black;
+		clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+	}
+
+	input[type='checkbox']:checked::before {
+		transform: scale(1);
+	}
+
+	input[type='checkbox']:focus {
+		outline-offset: 4px;
+		border: 0.1em solid black;
+	}
+
+	input[type='checkbox']:disabled {
+		cursor: not-allowed;
+		color: #ccc;
+	}
+
+	input[type='checkbox']:disabled::before {
+		box-shadow: inset 1em 1em #aaa;
+	}
+}

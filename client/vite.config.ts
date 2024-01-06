@@ -26,6 +26,8 @@ const webSocketServer = {
 			socket.on('disconnect', () => {
 				console.log('user is disconnected');
 			});
+
+			socket.on('error', (err) => console.log(err));
 		});
 	}
 };

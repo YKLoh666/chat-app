@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import userRouter from "./routes/userRouter.js";
+import { connectDB } from "./db/db.js";
 
 import { handler } from "../client/build/handler.js";
 
@@ -9,11 +10,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const port = process.env.PORT;
 const app = express();
 const server = createServer(app);
+const io = new Server(server);
 
+await connectDB();
+
+// cross origin setup (for dev server)
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -21,8 +27,7 @@ app.use(
   })
 );
 
-const io = new Server(server);
-
+// Socket connection setup
 io.on("connection", (socket) => {
   console.log("user is connected");
 
@@ -40,8 +45,14 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use("/api", userRouter);
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
+// api routers
+app.use("/api/users", userRouter);
+
+// serve static client build
 app.use(handler);
 
 server.listen(port, () => console.log(`Server run at port ${port}`));

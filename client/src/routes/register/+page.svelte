@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import { goto } from '$app/navigation';
+	import axios from 'axios';
 
 	$: username = '';
 	$: email = '';
@@ -7,14 +8,21 @@
 
 	const handleSubmit = async () => {
 		try {
-			const response = await fetch('http://localhost:5000/api/users', {
-				method: 'post'
+			const response = await axios.post('http://localhost:5000/api/users', {
+				username,
+				email,
+				password
 			});
 
-			const data = await response.json();
+			const data = response.data;
 
 			if (data.success) {
 				console.log(data.newUser);
+				alert('Successfully registered user. Please login.');
+				goto('/', { replaceState: true });
+			} else {
+				console.error(data.message);
+				alert(data.message);
 			}
 		} catch (error) {
 			console.log(error);

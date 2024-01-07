@@ -1,16 +1,36 @@
 import User from "../db/Model/UserModel.js";
-import { connectDB } from "../db/db.js";
 
 export const registerUser = async (req, res) => {
-  await connectDB();
+  const { username, email, password } = req.body;
+
   const newUser = new User({
-    username: "Hello World",
-    email: "helloworld@gmail.com",
+    username,
+    email,
+    password,
   });
 
-  newUser.save();
+  try {
+    await newUser.save();
+  } catch (error) {
+    let message;
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyPattern)[0];
 
+      switch (duplicateField) {
+        case "username":
+          message = "Username already exists";
+          break;
+        case "email":
+          message = "Email already exists";
+          break;
+        default:
+          message = "Duplicate value error";
+      }
+    }
+
+    console.log(message);
+    return res.json({ success: false, message });
+  }
   console.log(`User added: ${newUser}`);
-
   return res.json({ success: true, newUser });
 };

@@ -4,10 +4,27 @@
 	$: username = '';
 	$: email = '';
 	$: password = '';
+
+	const handleSubmit = async () => {
+		try {
+			const response = await fetch('http://localhost:5000/api/users', {
+				method: 'post'
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				console.log(data.newUser);
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 </script>
 
 <form
 	class="w-1/3 box-border mx-auto my-24 flex flex-col items-center border rounded-md p-4 pb-10 shadow-lg"
+	on:submit|preventDefault={handleSubmit}
 >
 	<h1 class="text-2xl m-4">Register</h1>
 	<div class="form-group">

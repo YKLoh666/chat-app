@@ -1,27 +1,49 @@
 <script lang="ts">
 	import EyeOff from '../components/icons/EyeOff.svelte';
 	import Eye from '../components/icons/Eye.svelte';
+	import { onMount } from 'svelte';
+	import axios from 'axios';
+	import { goto } from '$app/navigation';
 
 	$: uid = '';
 	$: password = '';
 	$: isShowing = false;
 	$: rmbMe = false;
 
-	const login = () => {
-		let isUsername = true;
-		if (uid.includes('@')) isUsername = false; // is email
+	let uidRef: HTMLInputElement | null = null;
 
-		if (isUsername) {
-			// login with username
-		} else {
-			// login with email
+	onMount(async () => {
+		if (
+			(await axios.get('http://localhost:5000/api/users', { withCredentials: true })).data.validated
+		)
+			await goto('/chat', { invalidateAll: true, replaceState: true });
+		if (uidRef) uidRef.focus();
+	});
+
+	const login = async () => {
+		try {
+			const { success, message } = (
+				await axios.post(
+					'http://localhost:5000/api/users/login',
+					{
+						uid,
+						password,
+						rmbMe
+					},
+					{
+						withCredentials: true
+					}
+				)
+			).data;
+
+			if (success) {
+				await goto('/chat', { replaceState: true, invalidateAll: true });
+			} else {
+				alert(message);
+			}
+		} catch (err) {
+			console.error(err);
 		}
-
-		// console.log(
-		// 	`Login Credential: ${uid} is ${
-		// 		isUsername ? 'username' : 'email'
-		// 	}, the password is ${password}`
-		// );
 	};
 </script>
 
@@ -29,9 +51,10 @@
 	<div class="w-1/2 m-3 p-4 hidden lg:block"></div>
 	<div class="w-full mx-auto m-3 p-4 lg:w-1/2 lg:mx-3">
 		<form
-			class="mx-auto w-full flex flex-col items-center border rounded p-0 pt-3 pb-12 shadow-lg lg:p-6 lg:w-4/6"
+			class="mx-auto w-full flex flex-col items-center border rounded p-0 pt-3 pb-10 shadow-lg lg:p-6 lg:w-4/6"
 			on:submit|preventDefault={login}
 		>
+			<h1 class="text-2xl mb-4 mt-0">Login</h1>
 			<div class="form-group">
 				<input
 					type="text"
@@ -40,6 +63,7 @@
 					name="username"
 					placeholder=""
 					bind:value={uid}
+					bind:this={uidRef}
 					required
 				/>
 				<div class="form-label whitespace-nowrap">Username / Email</div>
@@ -71,7 +95,7 @@
 					<button
 						type="button"
 						class="pointer-events-auto"
-						on:click={() => (isShowing = !isShowing)}
+						on:mousedown={() => (isShowing = !isShowing)}
 					>
 						{#if isShowing}
 							<Eye />
@@ -90,7 +114,7 @@
 			</div>
 			<div class="form-group flex justify-between mt-6 text-sm items-center flex-wrap">
 				<a href="/register" class="hover:underline text-red-600 mb-3">New account</a>
-				<a href="/ForgotPassword" class="hover:underline text-blue-600 mb-3">Forgot password</a>
+				<a href="/forgotpassword" class="hover:underline text-blue-600 mb-3">Forgot password</a>
 			</div>
 		</form>
 	</div>

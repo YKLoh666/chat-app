@@ -22,6 +22,7 @@ await connectDB();
 // cross origin setup (for dev server)
 app.use(
   cors({
+    credentials: true,
     origin: "http://localhost:5173",
     optionsSuccessStatus: 200,
   })
@@ -45,7 +46,7 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

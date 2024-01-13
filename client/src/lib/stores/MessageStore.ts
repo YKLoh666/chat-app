@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-type Message = {
+export type Message = {
 	sender: string;
 	message: string;
 };

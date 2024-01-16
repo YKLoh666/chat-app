@@ -2,15 +2,28 @@ import isEmail from "validator/lib/isEmail.js";
 import User from "../db/Model/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import {
+  createDuoChatrooms,
+  createToken,
+  invalidateToken,
+} from "../utilities.js";
+import UserModel from "../db/Model/UserModel.js";
 
 export const validateUser = async (req, res) => {
   if (!req.signedCookies.jwt) return res.json({ validated: false });
-  const validate = jwt.verify(
-    req.signedCookies.jwt,
-    process.env.JWT_PRIVATE_KEY
-  );
-  if (!validate) return res.json({ validated: false });
-  return res.json({ validated: true });
+  try {
+    const { uid } = await jwt.verify(
+      req.signedCookies.jwt,
+      process.env.JWT_PRIVATE_KEY
+    );
+
+    const user = await UserModel.findById(uid, { username: 1 });
+
+    if (user) return res.json({ validated: true, username: user.username });
+  } catch (error) {
+    res = invalidateToken(res);
+    return res.json({ validated: false });
+  }
 };
 
 export const registerUser = async (req, res) => {
@@ -24,6 +37,7 @@ export const registerUser = async (req, res) => {
 
   try {
     await newUser.save();
+    await createDuoChatrooms(newUser);
   } catch (error) {
     let message;
     if (error.code === 11000) {
@@ -39,6 +53,8 @@ export const registerUser = async (req, res) => {
         default:
           message = "Duplicate value error";
       }
+    } else {
+      message = error.message;
     }
 
     console.log(message);
@@ -96,6 +112,7 @@ export const loginUser = async (req, res) => {
       });
     }
   } catch (err) {
+    console.error(err);
     return res.json({
       success: false,
       message: "Wrong Credential, please try again.",
@@ -103,20 +120,48 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const logout = async (req, res) => {
-  res.cookie("jwt", "", {
-    maxAge: 0,
-    httpOnly: true,
-    signed: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-  });
+export const updateStatus = async (req, res) => {
+  try {
+    const username = req.params.username;
+    const { active, socketId, fromLogout } = req.body;
+    const { uid } = await jwt.verify(
+      req.signedCookies.jwt,
+      process.env.JWT_PRIVATE_KEY
+    );
 
-  return res.json({ success: true });
+    if (fromLogout) res = invalidateToken(res);
+
+    if (!uid) {
+      res.status(401);
+      throw new Error("Unauthorized api call.");
+    }
+
+    const usernameFromDB = await User.findById(uid, { _id: 1 });
+
+    if (usernameFromDB._id.equals(username)) {
+      res.status(401);
+      throw new Error("Unauthorized api call.");
+    }
+
+    await UserModel.updateOne(
+      { username },
+      {
+        $set: {
+          active,
+          socket_id: socketId,
+        },
+      }
+    );
+    return res.end();
+  } catch (err) {
+    console.error(err);
+    return console.error("Failed to update user status");
+  }
 };
 
-const createToken = (data) => {
-  return jwt.sign(data, process.env.JWT_PRIVATE_KEY, {
-    expiresIn: "12h",
-  });
+export const logout = async (req, res, next) => {
+  req.params.username = req.body.username;
+  req.body = { ...req.body, active: false, socketId: "", fromLogout: true };
+
+  next();
 };

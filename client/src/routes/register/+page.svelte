@@ -4,6 +4,7 @@
 	import Eye from '../../components/icons/Eye.svelte';
 	import EyeOff from '../../components/icons/EyeOff.svelte';
 	import { onMount } from 'svelte';
+	import { writableUsername } from '$lib/stores/UserStore';
 
 	$: username = '';
 	$: email = '';
@@ -13,10 +14,15 @@
 	let usernameRef: HTMLInputElement | null = null;
 
 	onMount(async () => {
-		if (
-			(await axios.get('http://localhost:5000/api/users', { withCredentials: true })).data.validated
-		)
-			await goto('/chat', { invalidateAll: true, replaceState: true });
+		try {
+			const { validated, username } = (
+				await axios.get('http://localhost:5000/api/users', { withCredentials: true })
+			).data;
+			if (validated) await goto('/chat', { invalidateAll: true, replaceState: true });
+			writableUsername.set(username);
+		} catch (err) {
+			console.error(err);
+		}
 		if (usernameRef) usernameRef.focus();
 	});
 

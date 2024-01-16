@@ -1,16 +1,19 @@
 <script lang="ts">
-	import { goto, replaceState } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import axios from 'axios';
+	import { writableUsername } from '$lib/stores/UserStore';
 
 	export let route: string;
 
 	const logout = async () => {
 		try {
-			const { success } = (
-				await axios.post('http://localhost:5000/api/users/logout', {}, { withCredentials: true })
-			).data;
+			await axios.post(
+				'http://localhost:5000/api/users/logout',
+				{ username: $writableUsername },
+				{ withCredentials: true }
+			);
 
-			if (success) await goto('/', { replaceState: true, invalidateAll: true });
+			await goto('/', { replaceState: true, invalidateAll: true });
 		} catch (err) {
 			console.error(err);
 		}

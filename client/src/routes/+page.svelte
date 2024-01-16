@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
+	import { writableUsername } from '$lib/stores/UserStore';
 
 	$: uid = '';
 	$: password = '';
@@ -13,10 +14,18 @@
 	let uidRef: HTMLInputElement | null = null;
 
 	onMount(async () => {
-		if (
-			(await axios.get('http://localhost:5000/api/users', { withCredentials: true })).data.validated
-		)
-			await goto('/chat', { invalidateAll: true, replaceState: true });
+		try {
+			const response = await axios.get('http://localhost:5000/api/users', {
+				withCredentials: true
+			});
+			const { validated } = response.data;
+			if (validated) {
+				await goto('/chat', { replaceState: true });
+			}
+			writableUsername.set('');
+		} catch (error) {
+			console.log(error);
+		}
 		if (uidRef) uidRef.focus();
 	});
 
@@ -37,7 +46,7 @@
 			).data;
 
 			if (success) {
-				await goto('/chat', { replaceState: true, invalidateAll: true });
+				await goto('/chat');
 			} else {
 				alert(message);
 			}

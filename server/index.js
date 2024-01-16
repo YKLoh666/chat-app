@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import userRouter from "./routes/userRouter.js";
+import chatroomRouter from "./routes/chatroomRouter.js";
 import { connectDB } from "./db/db.js";
 
 import { handler } from "../client/build/handler.js";
@@ -11,11 +12,17 @@ dotenv.config();
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import UserModel from "./db/Model/UserModel.js";
 
 const port = process.env.PORT;
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true,
+  },
+});
 
 await connectDB();
 
@@ -30,7 +37,14 @@ app.use(
 
 // Socket connection setup
 io.on("connection", (socket) => {
+  let user;
   console.log("user is connected");
+
+  socket.on("authenticated", async (username) => {
+    user = username;
+    socket.join("auth");
+    socket.emit("join room", username);
+  });
 
   socket.on("send message", (message) => {
     console.log(`Received message from ${socket.id}: ${message}`);
@@ -41,9 +55,15 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("disconnect", () => {
-    console.log("user is disconnected");
+  socket.on("disconnect", async () => {
+    await UserModel.findOneAndUpdate(
+      { username: user },
+      { $set: { active: false, socket_id: "" } }
+    );
+    console.log("user disconnected");
   });
+
+  socket.on("error", (err) => console.log(err));
 });
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -52,6 +72,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // api routers
 app.use("/api/users", userRouter);
+app.use("/api/chatrooms", chatroomRouter);
 
 // serve static client build
 app.use(handler);

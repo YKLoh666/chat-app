@@ -1,11 +1,25 @@
 import jwt from "jsonwebtoken";
 import UserModel from "./db/Model/UserModel.js";
 import ChatRoomModel from "./db/Model/ChatRoomModel.js";
+import MessageModel from "./db/Model/MessageModel.js";
 
 export const createToken = (data) => {
   return jwt.sign(data, process.env.JWT_PRIVATE_KEY, {
     expiresIn: "12h",
   });
+};
+
+export const authMiddleware = async (req, res, next) => {
+  const token = req.signedCookies.jwt;
+
+  try {
+    const { uid } = await jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+
+    req.uid = uid;
+    next();
+  } catch (error) {
+    res.end();
+  }
 };
 
 export const invalidateToken = (res) => {
@@ -43,6 +57,16 @@ export const createDuoChatrooms = async (newUser) => {
     );
 
     await ChatRoomModel.insertMany(chatroomDocuments);
+
+    const messageDocuments = chatroomDocuments.map(
+      (chatroomDocument) =>
+        new MessageModel({
+          chatroom: chatroomDocument._id,
+          message: "Chatroom created",
+        })
+    );
+
+    await MessageModel.insertMany(messageDocuments);
 
     return;
   } catch (err) {

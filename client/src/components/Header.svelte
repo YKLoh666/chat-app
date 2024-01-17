@@ -27,7 +27,7 @@
 
 	{#if route === '/register'}
 		<a href="/" class="btn-secondary">Login</a>
-	{:else if route === '/chat'}
+	{:else if route === '/chat' || route.startsWith('/chat/')}
 		<button on:click={logout} class="btn-secondary">Logout</button>
 	{:else}
 		<a href="/register" class="btn-secondary">Register</a>

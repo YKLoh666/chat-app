@@ -1,8 +1,9 @@
 import express from "express";
 import { getChatrooms } from "../controller/chatroomControllers.js";
+import { authMiddleware } from "../utilities.js";
 
 const router = express.Router();
 
-router.get("/", getChatrooms);
+router.get("/", authMiddleware, getChatrooms);
 
 export default router;

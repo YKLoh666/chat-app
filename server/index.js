@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import userRouter from "./routes/userRouter.js";
 import chatroomRouter from "./routes/chatroomRouter.js";
+import messageRouter from "./routes/messageRouter.js";
 import { connectDB } from "./db/db.js";
 
 import { handler } from "../client/build/handler.js";
@@ -73,6 +74,7 @@ app.use(express.urlencoded({ extended: false }));
 // api routers
 app.use("/api/users", userRouter);
 app.use("/api/chatrooms", chatroomRouter);
+app.use("/api/messages", messageRouter);
 
 // serve static client build
 app.use(handler);

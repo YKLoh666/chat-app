@@ -1,29 +1,29 @@
-import jwt from "jsonwebtoken";
 import ChatRoomModel from "../db/Model/ChatRoomModel.js";
 
 export const getChatrooms = async (req, res) => {
   try {
-    const { uid } = await jwt.verify(
-      req.signedCookies["jwt"],
-      process.env.JWT_PRIVATE_KEY
-    );
+    const uid = req.uid;
     const chatrooms = await ChatRoomModel.find(
       { members: uid },
-      { _id: 0, __v: 0, updatedAt: 0 }
+      { __v: 0, updatedAt: 0 }
     )
-      .populate("members", "username")
+      .sort("-message_updated")
+      .populate({
+        path: "members",
+        select: { _id: 0, username: 1 },
+      })
       .populate({
         path: "message_seen_list",
         match: { user: uid },
         populate: {
           path: "user",
           model: "User",
-          select: "Username",
+          select: { _id: 0, username: 1 },
         },
       })
       .exec();
-    return res.json({ success: true, chatrooms });
+    return res.json({ chatrooms });
   } catch (err) {
-    return res.json({ success: false, message: "Failed to load chatrooms" });
+    return res.json({ chatrooms: false });
   }
 };

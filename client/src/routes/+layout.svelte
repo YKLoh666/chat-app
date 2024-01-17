@@ -3,7 +3,12 @@
 	import '../app.css';
 
 	import { page } from '$app/stores';
+	import { navigating } from '$app/stores';
 </script>
 
 <Header route={$page.url.pathname} />
-<slot />
+{#if $navigating}
+	<p>Loading...</p>
+{:else}
+	<slot />
+{/if}

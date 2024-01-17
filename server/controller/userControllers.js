@@ -124,23 +124,16 @@ export const updateStatus = async (req, res) => {
   try {
     const username = req.params.username;
     const { active, socketId, fromLogout } = req.body;
-    const { uid } = await jwt.verify(
-      req.signedCookies.jwt,
-      process.env.JWT_PRIVATE_KEY
-    );
+    const uid = req.uid;
 
     if (fromLogout) res = invalidateToken(res);
 
-    if (!uid) {
-      res.status(401);
-      throw new Error("Unauthorized api call.");
-    }
+    const usernameFromDB = await User.findById(uid, { username: 1, _id: 0 });
 
-    const usernameFromDB = await User.findById(uid, { _id: 1 });
-
-    if (usernameFromDB._id.equals(username)) {
+    if (usernameFromDB.username !== username) {
       res.status(401);
-      throw new Error("Unauthorized api call.");
+      console.error("Unauthorized api call.");
+      return res.end();
     }
 
     await UserModel.updateOne(

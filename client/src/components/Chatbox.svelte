@@ -24,9 +24,3 @@
 	<input type="text" class="w-11/12 rounded-full px-4 focus:outline-none" bind:value={message} />
 	<button class="bg-sky-600 p-1 px-3 rounded text-white">Send</button>
 </form>
-
-<style>
-	form {
-		width: inherit;
-	}
-</style>

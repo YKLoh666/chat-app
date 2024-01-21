@@ -1,7 +1,6 @@
 import { Socket } from "socket.io";
 import ChatRoomModel from "../../db/Model/ChatRoomModel.js";
 import MessageModel from "../../db/Model/MessageModel.js";
-import mongoose from "mongoose";
 
 /**
  * sends a message to the given chatroom

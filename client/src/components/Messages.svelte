@@ -4,7 +4,7 @@
 	$: messages = $writableMessages;
 </script>
 
-<div class="p-4 flex-grow flex flex-col-reverse overflow-y-auto">
+<div class="p-4 flex-grow flex flex-col-reverse">
 	{#if messages}
 		{#each messages as { sent_by, message, updatedAt }}
 			<Message {sent_by} {message} {updatedAt} />

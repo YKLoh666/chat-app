@@ -14,8 +14,8 @@
 				chatroom: $page.url.pathname.substring(6)
 			});
 			writableMessages.update((existingMessages) => [
-				...existingMessages,
-				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() }
+				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() },
+				...existingMessages
 			]);
 
 			message = '';

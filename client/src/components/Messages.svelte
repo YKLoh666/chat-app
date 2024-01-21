@@ -1,12 +1,15 @@
 <script>
 	import Message from './Message.svelte';
-	import { messagesStore } from '$lib/stores/MessageStore';
-
-	let socket;
+	import { writableMessages } from '$lib/stores/MessageStore';
+	$: messages = $writableMessages;
 </script>
 
-<div class="p-4 flex-grow flex flex-col justify-end">
-	{#each $messagesStore as { sender, message }}
-		<Message {sender} {message} />
-	{/each}
+<div class="p-4 flex-grow flex flex-col-reverse overflow-y-auto">
+	{#if messages}
+		{#each messages as { sent_by, message, updatedAt }}
+			<Message {sent_by} {message} {updatedAt} />
+		{/each}
+	{:else}
+		<p class="flex justify-center">Loading...</p>
+	{/if}
 </div>

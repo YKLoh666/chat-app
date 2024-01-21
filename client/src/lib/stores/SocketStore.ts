@@ -1,9 +1,9 @@
 import { io } from 'socket.io-client';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { writableMessages } from './MessageStore';
 import type { Message } from './MessageStore';
-import axios from 'axios';
 import { PUBLIC_BASE_URL } from '$env/static/public';
+import { page } from '$app/stores';
 
 export const socket = io(PUBLIC_BASE_URL, { withCredentials: true });
 
@@ -24,30 +24,23 @@ addListener(
 	({
 		sent_by,
 		updatedAt,
+		chatroom,
 		message
 	}: {
 		sent_by: { username: string };
 		updatedAt: Date;
 		message: string;
+		chatroom: string;
 	}) => {
-		writableMessages.update((existingMessages) => [
-			...existingMessages,
-			{ sent_by, updatedAt, message } as Message
-		]);
+		if (get(page).url.pathname.substring(6) === chatroom)
+			writableMessages.update((existingMessages) => [
+				{ sent_by, updatedAt, message } as Message,
+				...existingMessages
+			]);
 	}
 );
 
-addListener('join room', async (username) => {
-	try {
-		await axios.put(
-			`${PUBLIC_BASE_URL}/api/users/${username}`,
-			{
-				active: true,
-				socketId: socket.id
-			},
-			{ withCredentials: true }
-		);
-	} catch (err) {
-		console.error(err);
-	}
+addListener('authorize status', (status) => {
+	if (status) console.log(`Successfully authorized`);
+	else console.error(`Failed to authorize`);
 });

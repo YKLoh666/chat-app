@@ -14,6 +14,8 @@ dotenv.config();
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import UserModel from "./db/Model/UserModel.js";
+import { connectSocket } from "./socket-io/connect.js";
+import { authMiddleware } from "./socket-io/functions/socketAuthMiddleware.js";
 
 const port = process.env.PORT;
 const app = express();
@@ -26,6 +28,7 @@ const io = new Server(server, {
           credentials: true,
         }
       : undefined,
+  cookie: true,
 });
 
 await connectDB();
@@ -42,37 +45,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Socket connection setup
-io.on("connection", (socket) => {
-  let user;
-  console.log("user is connected");
-
-  socket.on("authenticated", async (username) => {
-    user = username;
-    socket.join("auth");
-    socket.emit("join room", username);
-  });
-
-  socket.on("send message", ({ username, message, chatroom }) => {
-    console.log(`Received message from ${socket.id}: ${message}`);
-
-    socket.broadcast.emit("received message", {
-      sent_by: { username },
-      message,
-      chatroom,
-      updatedAt: new Date(),
-    });
-  });
-
-  socket.on("disconnect", async () => {
-    await UserModel.findOneAndUpdate(
-      { username: user },
-      { $set: { active: false, socket_id: "" } }
-    );
-    console.log("user disconnected");
-  });
-
-  socket.on("error", (err) => console.log(err));
-});
+io.use(authMiddleware);
+io.on("connection", connectSocket);
 
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json());

@@ -1,8 +1,13 @@
 import { writable } from 'svelte/store';
 
 export type Message = {
-	sender: string;
+	updatedAt: Date;
 	message: string;
+	sent_by:
+		| {
+				username: string;
+		  }
+		| undefined;
 };
 
-export const messagesStore = writable<Message[]>([]);
+export const writableMessages = writable<Message[]>([]);

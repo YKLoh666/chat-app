@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 import { writable } from 'svelte/store';
-import { messagesStore } from './MessageStore';
+import { writableMessages } from './MessageStore';
 import type { Message } from './MessageStore';
 import axios from 'axios';
 import { PUBLIC_BASE_URL } from '$env/static/public';
@@ -19,9 +19,23 @@ export const removeListener = (event: string) => {
 	socket.off(event);
 };
 
-addListener('received message', (data) => {
-	messagesStore.update((existingMessages) => [...existingMessages, data as Message]);
-});
+addListener(
+	'received message',
+	({
+		sent_by,
+		updatedAt,
+		message
+	}: {
+		sent_by: { username: string };
+		updatedAt: Date;
+		message: string;
+	}) => {
+		writableMessages.update((existingMessages) => [
+			...existingMessages,
+			{ sent_by, updatedAt, message } as Message
+		]);
+	}
+);
 
 addListener('join room', async (username) => {
 	try {

@@ -1,16 +1,23 @@
 <script lang="ts">
-	import { messagesStore } from '$lib/stores/MessageStore';
+	import { page } from '$app/stores';
+	import { writableMessages } from '$lib/stores/MessageStore';
 	import { socket } from '$lib/stores/SocketStore';
+	import { writableUsername } from '$lib/stores/UserStore';
 
 	$: message = '';
 
 	function submitText() {
 		if (message && socket.id) {
-			socket.emit('send message', message);
-			messagesStore.update((existingMessages) => [
+			socket.emit('send message', {
+				username: $writableUsername,
+				message,
+				chatroom: $page.url.pathname.substring(6)
+			});
+			writableMessages.update((existingMessages) => [
 				...existingMessages,
-				{ sender: socket.id!, message }
+				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() }
 			]);
+
 			message = '';
 		}
 	}

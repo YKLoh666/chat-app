@@ -52,12 +52,14 @@ io.on("connection", (socket) => {
     socket.emit("join room", username);
   });
 
-  socket.on("send message", (message) => {
+  socket.on("send message", ({ username, message, chatroom }) => {
     console.log(`Received message from ${socket.id}: ${message}`);
 
     socket.broadcast.emit("received message", {
-      sender: socket.id,
+      sent_by: { username },
       message,
+      chatroom,
+      updatedAt: new Date(),
     });
   });
 

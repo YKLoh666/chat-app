@@ -73,6 +73,13 @@ export const createDuoChatrooms = async (newUser) => {
 
     await MessageModel.insertMany(messageDocuments);
 
+    messageDocuments.forEach(
+      async (messageDoc) =>
+        await ChatRoomModel.findByIdAndUpdate(messageDoc.chatroom, {
+          message_updated: messageDoc._id,
+        })
+    );
+
     return;
   } catch (err) {
     throw new Error("Failed to create chatroom");

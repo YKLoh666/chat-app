@@ -3,28 +3,15 @@
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { page } from '$app/stores';
 	import { getTimeDifference } from '$lib/utilities';
-
-	type Chatroom = {
-		_id: string;
-		room_type: string;
-		members: {
-			username: string;
-		}[];
-	};
+	import type { Chatroom } from '$lib/stores/ContactListStore';
 
 	export let chatroom: Chatroom;
-	const { _id, room_type, members } = chatroom;
-
-	let displayTitle: string;
-
-	$: if (room_type === 'SELF') {
-		displayTitle = $writableUsername;
-	} else if (room_type === 'DUO' && members && members.length === 2) {
-		if (members[0].username === $writableUsername) displayTitle = members[1].username;
-		else displayTitle = members[0].username;
-	}
-
-	let date: string;
+	const {
+		_id,
+		name,
+		message_seen: { index },
+		message_updated: { message, updatedAt, sent_by }
+	} = chatroom;
 </script>
 
 <a
@@ -35,22 +22,30 @@
 >
 	<img src={Profile} alt="profile" class="w-12 rounded-full mx-2 my-4 shadow-[0px_1px_4px_#0005]" />
 	<div class="flex flex-col justify-between h-20">
-		<div class="text-ellipsis w-64 text-nowrap overflow-hidden text-black h-10 flex items-end">
-			{displayTitle}
+		<div
+			class="text-ellipsis w-64 text-nowrap overflow-hidden text-black h-10 flex items-end
+			{index ? 'font-bold' : ''}"
+		>
+			{name}
 		</div>
 		<div
-			class="text-ellipsis w-64 text-nowrap overflow-hidden text-xs text-gray-500 h-9 items-start"
+			class="text-ellipsis w-64 text-nowrap overflow-hidden text-xs h-9 items-start
+			{index ? 'font-bold' : 'text-gray-500'}"
 		>
-			{`Message here · ${getTimeDifference(new Date(), new Date())}`}
+			{`${
+				sent_by && sent_by.username === $writableUsername ? 'You: ' : ''
+			} ${message} · ${getTimeDifference(new Date(), new Date(updatedAt))}`}
 		</div>
 	</div>
 	<div class="flex flex-col justify-between h-20">
 		<div class="h-9 flex items-end justify-center">
-			<!-- <div
-				class="w-7 h-7 bg-sky-500 rounded-full text-center text-white font-bold leading-[1.65rem]"
-			>
-				11
-			</div> -->
+			{#if index}
+				<div class="w-6 h-6 bg-red-500 rounded-full flex justify-center items-center text-white">
+					{index}
+				</div>
+			{:else}
+				<div class="w-5 h-5 rounded-full text-center text-white leading-[1.15rem]"></div>
+			{/if}
 		</div>
 		<div></div>
 	</div>

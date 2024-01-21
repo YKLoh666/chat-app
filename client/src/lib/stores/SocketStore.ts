@@ -3,8 +3,9 @@ import { writable } from 'svelte/store';
 import { messagesStore } from './MessageStore';
 import type { Message } from './MessageStore';
 import axios from 'axios';
+import { PUBLIC_BASE_URL } from '$env/static/public';
 
-export const socket = io('http://localhost:5000', { withCredentials: true });
+export const socket = io(PUBLIC_BASE_URL, { withCredentials: true });
 
 export const writableSocket = writable(socket);
 
@@ -25,7 +26,7 @@ addListener('received message', (data) => {
 addListener('join room', async (username) => {
 	try {
 		await axios.put(
-			`http://localhost:5000/api/users/${username}`,
+			`${PUBLIC_BASE_URL}/api/users/${username}`,
 			{
 				active: true,
 				socketId: socket.id

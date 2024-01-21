@@ -21,6 +21,7 @@ export const validateUser = async (req, res) => {
 
     if (user) return res.json({ validated: true, username: user.username });
   } catch (error) {
+    console.error(error);
     res = invalidateToken(res);
     return res.json({ validated: false });
   }
@@ -38,6 +39,15 @@ export const registerUser = async (req, res) => {
   try {
     await newUser.save();
     await createDuoChatrooms(newUser);
+    res.cookie("jwt", createToken({ uid: newUser._id }), {
+      httpOnly: true,
+      signed: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    console.log(`User added: ${newUser.username}`);
+    return res.json({ success: true, username: newUser.username });
   } catch (error) {
     let message;
     if (error.code === 11000) {
@@ -57,19 +67,9 @@ export const registerUser = async (req, res) => {
       message = error.message;
     }
 
-    console.log(message);
+    console.error(message);
     return res.json({ success: false, message });
   }
-  const token = createToken({ uid: newUser._id });
-  res.cookie("jwt", token, {
-    maxAge: 12 * 60 * 60 * 1000,
-    httpOnly: true,
-    signed: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-  });
-  console.log(`User added: ${newUser.username}`);
-  return res.json({ success: true, username: newUser.username });
 };
 
 export const loginUser = async (req, res) => {
@@ -115,7 +115,7 @@ export const loginUser = async (req, res) => {
     console.error(err);
     return res.json({
       success: false,
-      message: "Wrong Credential, please try again.",
+      message: "Failed to login, please try again.",
     });
   }
 };
@@ -133,7 +133,7 @@ export const updateStatus = async (req, res) => {
     if (usernameFromDB.username !== username) {
       res.status(401);
       console.error("Unauthorized api call.");
-      return res.end();
+      return res.json({});
     }
 
     await UserModel.updateOne(

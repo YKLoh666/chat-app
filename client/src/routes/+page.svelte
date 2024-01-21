@@ -5,6 +5,7 @@
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
 	import { writableUsername } from '$lib/stores/UserStore';
+	import { PUBLIC_BASE_URL } from '$env/static/public';
 
 	$: uid = '';
 	$: password = '';
@@ -15,7 +16,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await axios.get('http://localhost:5000/api/users', {
+			const response = await axios.get(`${PUBLIC_BASE_URL}/api/users`, {
 				withCredentials: true
 			});
 			const { validated } = response.data;
@@ -33,7 +34,7 @@
 		try {
 			const { success, message } = (
 				await axios.post(
-					'http://localhost:5000/api/users/login',
+					`${PUBLIC_BASE_URL}/api/users/login`,
 					{
 						uid,
 						password,
@@ -46,7 +47,7 @@
 			).data;
 
 			if (success) {
-				await goto('/chat');
+				await goto('/chat', { invalidateAll: true, replaceState: true });
 			} else {
 				alert(message);
 			}
@@ -104,7 +105,7 @@
 					<button
 						type="button"
 						class="pointer-events-auto"
-						on:mousedown={() => (isShowing = !isShowing)}
+						on:click={() => (isShowing = !isShowing)}
 					>
 						{#if isShowing}
 							<Eye />

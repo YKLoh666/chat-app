@@ -6,12 +6,13 @@
 	import type { LayoutData } from './$types';
 	import { socket } from '$lib/stores/SocketStore';
 	import { writableUsername } from '$lib/stores/UserStore';
+	import { PUBLIC_BASE_URL } from '$env/static/public';
 
 	export let data: LayoutData;
 
 	onMount(async () => {
 		const { validated, username } = (
-			await axios.get('http://localhost:5000/api/users', { withCredentials: true })
+			await axios.get(`${PUBLIC_BASE_URL}/api/users`, { withCredentials: true })
 		).data;
 		if (!validated) await goto('/', { invalidateAll: true, replaceState: true });
 		else {

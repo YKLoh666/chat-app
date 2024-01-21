@@ -2,13 +2,14 @@
 	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { writableUsername } from '$lib/stores/UserStore';
+	import { PUBLIC_BASE_URL } from '$env/static/public';
 
 	export let route: string;
 
 	const logout = async () => {
 		try {
 			await axios.post(
-				'http://localhost:5000/api/users/logout',
+				`${PUBLIC_BASE_URL}/api/users/logout`,
 				{ username: $writableUsername },
 				{ withCredentials: true }
 			);

@@ -5,7 +5,7 @@
 	let socket;
 </script>
 
-<div class="p-4 flex-grow">
+<div class="p-4 flex-grow flex flex-col justify-end">
 	{#each $messagesStore as { sender, message }}
 		<Message {sender} {message} />
 	{/each}

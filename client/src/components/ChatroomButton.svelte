@@ -12,20 +12,8 @@
 		}[];
 	};
 
-	type Message = {
-		sent_by:
-			| {
-					username: string;
-			  }
-			| undefined;
-		message: string;
-		updatedAt: Date;
-	};
-
 	export let chatroom: Chatroom;
-	export let message: Message;
 	const { _id, room_type, members } = chatroom;
-	const { sent_by, updatedAt } = message;
 
 	let displayTitle: string;
 
@@ -53,11 +41,7 @@
 		<div
 			class="text-ellipsis w-64 text-nowrap overflow-hidden text-xs text-gray-500 h-9 items-start"
 		>
-			{#if sent_by && sent_by.username === $writableUsername}
-				{`you: ${message.message} · ${getTimeDifference(new Date(), new Date(updatedAt))}`}
-			{:else}
-				{`${message.message} · ${getTimeDifference(new Date(), new Date(updatedAt))}`}
-			{/if}
+			{`Message here · ${getTimeDifference(new Date(), new Date())}`}
 		</div>
 	</div>
 	<div class="flex flex-col justify-between h-20">

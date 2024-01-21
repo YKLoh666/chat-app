@@ -3,12 +3,14 @@ import UserModel from "./db/Model/UserModel.js";
 import ChatRoomModel from "./db/Model/ChatRoomModel.js";
 import MessageModel from "./db/Model/MessageModel.js";
 
+// Create a new jwt token
 export const createToken = (data) => {
   return jwt.sign(data, process.env.JWT_PRIVATE_KEY, {
     expiresIn: "12h",
   });
 };
 
+// Authentication middleware for protecting routes
 export const authMiddleware = async (req, res, next) => {
   const token = req.signedCookies.jwt;
 
@@ -18,10 +20,12 @@ export const authMiddleware = async (req, res, next) => {
     req.uid = uid;
     next();
   } catch (error) {
-    res.end();
+    res.status(401);
+    res.json({});
   }
 };
 
+// Invalidate the jwt token and return the response object
 export const invalidateToken = (res) => {
   res.cookie("jwt", "", {
     maxAge: 0,
@@ -34,6 +38,7 @@ export const invalidateToken = (res) => {
   return res;
 };
 
+// Create a new duo chatroom
 export const createDuoChatrooms = async (newUser) => {
   try {
     const listOfUser = await UserModel.find({}, { _id: 1 });

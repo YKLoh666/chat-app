@@ -19,22 +19,27 @@ const port = process.env.PORT;
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173",
-    credentials: true,
-  },
+  cors:
+    process.env.NODE_ENV === "development"
+      ? {
+          origin: "http://localhost:5173",
+          credentials: true,
+        }
+      : undefined,
 });
 
 await connectDB();
 
 // cross origin setup (for dev server)
-app.use(
-  cors({
-    credentials: true,
-    origin: "http://localhost:5173",
-    optionsSuccessStatus: 200,
-  })
-);
+if (process.env.NODE_ENV === "development") {
+  app.use(
+    cors({
+      credentials: true,
+      origin: "http://localhost:5173",
+      optionsSuccessStatus: 200,
+    })
+  );
+}
 
 // Socket connection setup
 io.on("connection", (socket) => {

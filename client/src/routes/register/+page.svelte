@@ -5,6 +5,7 @@
 	import EyeOff from '../../components/icons/EyeOff.svelte';
 	import { onMount } from 'svelte';
 	import { writableUsername } from '$lib/stores/UserStore';
+	import { PUBLIC_BASE_URL } from '$env/static/public';
 
 	$: username = '';
 	$: email = '';
@@ -16,7 +17,7 @@
 	onMount(async () => {
 		try {
 			const { validated, username } = (
-				await axios.get('http://localhost:5000/api/users', { withCredentials: true })
+				await axios.get(`${PUBLIC_BASE_URL}/api/users`, { withCredentials: true })
 			).data;
 			if (validated) await goto('/chat', { invalidateAll: true, replaceState: true });
 			writableUsername.set(username);
@@ -28,17 +29,21 @@
 
 	const handleSubmit = async () => {
 		try {
-			const response = await axios.post('http://localhost:5000/api/users/register', {
-				username,
-				email,
-				password
-			});
-
-			const data = response.data;
+			const data = (
+				await axios.post(
+					`${PUBLIC_BASE_URL}/api/users/register`,
+					{
+						username,
+						email,
+						password
+					},
+					{ withCredentials: true }
+				)
+			).data;
 
 			if (data.success) {
 				alert('Successfully registered user.');
-				goto('/chat', { replaceState: true });
+				await goto('/chat', { invalidateAll: true, replaceState: true });
 			} else {
 				console.error(data.message);
 				alert(data.message);
@@ -83,6 +88,9 @@
 				type="button"
 				class="pointer-events-auto"
 				on:mousedown={() => (isShowing = !isShowing)}
+				on:click={() => {
+					isShowing = !isShowing;
+				}}
 			>
 				{#if !isShowing}
 					<EyeOff />

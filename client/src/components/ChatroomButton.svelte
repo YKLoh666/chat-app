@@ -15,6 +15,7 @@
 </script>
 
 <a
+	data-sveltekit-replacestate
 	class={`flex justify-around items-center w-full text-left h-18 ${
 		$page.params.chatroomid === chatroom._id && 'bg-sky-100'
 	} hover:bg-neutral-100`}

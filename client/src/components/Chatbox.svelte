@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { writableContactList } from '$lib/stores/ContactListStore';
 	import { writableMessages } from '$lib/stores/MessageStore';
 	import { socket } from '$lib/stores/SocketStore';
 	import { writableUsername } from '$lib/stores/UserStore';
@@ -12,6 +13,12 @@
 				username: $writableUsername,
 				message,
 				chatroom: $page.url.pathname.substring(6)
+			});
+			writableContactList.updateAtReceiveMessage({
+				sent_by: { username: $writableUsername },
+				updatedAt: new Date(),
+				message,
+				chatroom: { _id: $page.url.pathname.substring(6) }
 			});
 			writableMessages.update((existingMessages) => [
 				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() },

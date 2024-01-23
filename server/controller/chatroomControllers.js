@@ -34,6 +34,7 @@ export const getChatrooms = async (req, res) => {
 
     return res.json({ chatrooms });
   } catch (err) {
+    console.error(err);
     return res.json({ chatrooms: false });
   }
 };

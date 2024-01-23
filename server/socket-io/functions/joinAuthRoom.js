@@ -9,6 +9,8 @@ export const joinAuthRoom = async (uname, store, socket) => {
     if (username === uname) {
       store = { ...store, username, uid };
       socket.join("auth");
+      console.log(`user ${socket.id} is connected and authenticated`);
+
       socket.emit("authorize status", true);
       await UserModel.findByIdAndUpdate(uid, {
         socket_id: socket.id,

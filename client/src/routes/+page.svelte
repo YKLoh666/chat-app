@@ -6,6 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
+	import { page } from '$app/stores';
 
 	$: uid = '';
 	$: password = '';
@@ -47,7 +48,17 @@
 			).data;
 
 			if (success) {
-				await goto('/chat', { invalidateAll: true, replaceState: true });
+				if ($page.url.searchParams.get('redirect')) {
+					await goto(`${$page.url.searchParams.get('redirect')}`, {
+						invalidateAll: true,
+						replaceState: true
+					});
+				} else {
+					await goto('/chat', {
+						invalidateAll: true,
+						replaceState: true
+					});
+				}
 			} else {
 				alert(message);
 			}

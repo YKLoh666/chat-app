@@ -22,9 +22,12 @@
 	});
 </script>
 
-<main class="h-[90vh] w-full box-border flex">
-	<ContactList />
-	<div class="flex flex-col h-full w-3/4">
+<main class="h-[90vh] min-w-[320px] box-border flex">
+	<div class="h-full border w-[15%] box-border flex-grow-0 flex-shrink-0 md:w-96 flex flex-col">
+		<h1 class="text-2xl font-bold p-4 pb-0 hidden self-start md:block">Chats</h1>
+		<ContactList />
+	</div>
+	<div class="flex flex-col h-full w-[85%] md:w-3/4">
 		<slot />
 	</div>
 </main>

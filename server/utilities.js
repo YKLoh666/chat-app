@@ -76,7 +76,8 @@ export const createDuoChatrooms = async (newUser) => {
     messageDocuments.forEach(
       async (messageDoc) =>
         await ChatRoomModel.findByIdAndUpdate(messageDoc.chatroom, {
-          message_updated: messageDoc._id,
+          newest_message: messageDoc._id,
+          newest_message_updatedAt: messageDoc.updatedAt,
         })
     );
 

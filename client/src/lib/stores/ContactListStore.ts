@@ -13,7 +13,7 @@ export type Chatroom = {
 		index: number;
 		date: Date;
 	};
-	message_updated: {
+	newest_message: {
 		sent_by: {
 			username: string;
 		};
@@ -22,8 +22,38 @@ export type Chatroom = {
 	};
 };
 
+export type ChatroomFromDB = {
+	_id: string;
+	room_type: string;
+	name: string;
+	public: boolean;
+	members: {
+		username: string;
+	}[];
+	newest_message: {
+		message: string;
+		sent_by: {
+			username: string;
+		};
+		updatedAt: Date;
+	};
+	message_seen_list: [
+		{
+			user: {
+				username: string;
+			};
+			message_seen: number;
+			seen_date: Date;
+		}
+	];
+};
+
 function createContactListStore(initialValue: Chatroom[]) {
 	const contactListStore = writable<Chatroom[]>(initialValue);
+
+	const setContactList = (contactList: ChatroomFromDB[], username: string) => {
+		contactListStore.set(morphContactList(contactList, username));
+	};
 
 	const updateAtReceiveMessage = ({
 		sent_by,
@@ -58,7 +88,7 @@ function createContactListStore(initialValue: Chatroom[]) {
 										?.message_seen || 1,
 						date: new Date()
 					},
-					message_updated: {
+					newest_message: {
 						sent_by,
 						message,
 						updatedAt
@@ -78,7 +108,7 @@ function createContactListStore(initialValue: Chatroom[]) {
 								: movedChatroom.message_seen.index + 1,
 						date: new Date()
 					},
-					message_updated: {
+					newest_message: {
 						sent_by,
 						message,
 						updatedAt
@@ -108,9 +138,44 @@ function createContactListStore(initialValue: Chatroom[]) {
 
 	return {
 		...contactListStore,
+		setContactList,
 		updateAtReceiveMessage,
 		updateAtSeenMessage
 	};
 }
 
 export const writableContactList = createContactListStore([]);
+
+export const morphContactList = (chatrooms: ChatroomFromDB[], username: string) => {
+	return chatrooms.map((chatroom) => {
+		return morphChatroom(chatroom, username);
+	}) as Chatroom[];
+};
+
+export const morphChatroom = (chatroom: ChatroomFromDB, username: string) => {
+	const message_seen_obj = chatroom.message_seen_list?.find(
+		(obj) => obj.user.username === username
+	);
+	let name;
+
+	if (chatroom.room_type === 'GROUP') {
+		name = chatroom.name;
+	} else if (chatroom.room_type === 'DUO') {
+		const otherMember = chatroom.members?.find((val) => val.username !== username);
+		name = otherMember ? otherMember.username : 'unknown';
+	} else {
+		name = `${username} (me)`;
+	}
+
+	return {
+		_id: chatroom._id,
+		room_type: chatroom.room_type,
+		name,
+		members: chatroom.members,
+		message_seen: {
+			index: message_seen_obj?.message_seen ?? 0,
+			date: message_seen_obj?.seen_date ?? new Date()
+		},
+		newest_message: chatroom.newest_message
+	};
+};

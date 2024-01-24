@@ -26,7 +26,7 @@ const messageSeenSchema = new mongoose.Schema(
  *  name: string
  *  public: bool
  *  members: [usersOid]
- *  message_updated: messageOid,
+ *  newest_message: messageOid,
  *  message_seen_list: [{user: usersOid, message_seen: inc_number, seen_date: date }]
  * }
  */
@@ -55,9 +55,13 @@ const ChatRoomSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    message_updated: {
+    newest_message: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
+    },
+    newest_message_updatedAt: {
+      type: Date,
+      default: Date.now,
     },
     message_seen_list: {
       type: [messageSeenSchema],

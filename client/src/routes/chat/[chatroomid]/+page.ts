@@ -1,20 +1,24 @@
 import { PUBLIC_BASE_URL } from '$env/static/public';
-import { writableChatroom } from '$lib/stores/ChatroomStore';
-import { writableContactList } from '$lib/stores/ContactListStore';
+import { type ChatroomFromDB } from '$lib/stores/ContactListStore';
+import type { Message } from '$lib/stores/MessageStore';
 import type { PageLoad } from './$types';
 
 export const load = (async ({ params, fetch }) => {
-	writableContactList.subscribe(async (contactList) => {
-		writableChatroom.set(contactList.find((contact) => contact._id === params.chatroomid));
-	});
 	try {
-		const response = await fetch(`${PUBLIC_BASE_URL}/api/messages/${params.chatroomid}?step=0`, {
+		const response = await fetch(`${PUBLIC_BASE_URL}/api/messages/${params.chatroomid}?skip=0`, {
 			credentials: 'include'
 		});
-		const { messages } = await response.json();
-		return { messages };
+		const { messages }: { messages: Message[] } = await response.json();
+		//fetch chatroom from api
+		const { chatroom }: { chatroom: ChatroomFromDB } = await (
+			await fetch(`${PUBLIC_BASE_URL}/api/chatrooms/${params.chatroomid}`, {
+				credentials: 'include'
+			})
+		).json();
+
+		return { messages, chatroom };
 	} catch (err) {
 		console.error(err);
-		return {};
+		return { messages: [] };
 	}
 }) satisfies PageLoad;

@@ -3,7 +3,7 @@ import MessageModel from "../db/Model/MessageModel.js";
 export const getMessages = async (req, res) => {
   try {
     const chatroomid = req.params.chatroomid;
-    const step = req.query.step;
+    const skip = req.query.skip;
     const messages = await MessageModel.find(
       { chatroom: chatroomid },
       {
@@ -14,7 +14,7 @@ export const getMessages = async (req, res) => {
       }
     )
       .sort("-createdAt")
-      .skip(step)
+      .skip(skip)
       .limit(20)
       .populate({
         path: "sent_by",

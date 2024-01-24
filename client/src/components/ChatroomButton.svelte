@@ -10,19 +10,22 @@
 		_id,
 		name,
 		message_seen: { index },
-		message_updated: { message, updatedAt, sent_by }
+		newest_message: { message, updatedAt, sent_by }
 	} = chatroom;
 </script>
 
 <a
-	data-sveltekit-replacestate
-	class={`flex justify-around items-center w-full text-left h-18 ${
+	class={`flex justify-around items-center w-full text-left relative h-18 ${
 		$page.params.chatroomid === chatroom._id && 'bg-sky-100'
 	} hover:bg-neutral-100`}
 	href={`/chat/${_id}`}
 >
-	<img src={Profile} alt="profile" class="w-12 rounded-full mx-2 my-4 shadow-[0px_1px_4px_#0005]" />
-	<div class="flex flex-col justify-between h-20">
+	<img
+		src={Profile}
+		alt="profile"
+		class="w-10 md:w-12 rounded-full mx-2 my-2 md:my-4 shadow-[0px_1px_4px_#0005]"
+	/>
+	<div class="flex-col justify-between h-20 hidden md:flex">
 		<div
 			class="text-ellipsis w-64 text-nowrap overflow-hidden text-black h-10 flex items-end
 			{index ? 'font-bold' : ''}"
@@ -38,7 +41,7 @@
 			} ${message} · ${getTimeDifference(new Date(), new Date(updatedAt))}`}
 		</div>
 	</div>
-	<div class="flex flex-col justify-between h-20">
+	<div class="flex-col justify-between h-20 hidden md:flex">
 		<div class="h-9 flex items-end justify-center">
 			{#if index}
 				<div class="w-6 h-6 bg-red-500 rounded-full flex justify-center items-center text-white">
@@ -49,5 +52,14 @@
 			{/if}
 		</div>
 		<div></div>
+	</div>
+	<div class="absolute">
+		{#if index}
+			<div class="w-6 h-6 bg-red-500 rounded-full flex justify-center items-center text-white">
+				{index}
+			</div>
+		{:else}
+			<div class="w-5 h-5 rounded-full text-center text-white leading-[1.15rem]"></div>
+		{/if}
 	</div>
 </a>

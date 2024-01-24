@@ -13,6 +13,7 @@
 				{ username: $writableUsername },
 				{ withCredentials: true }
 			);
+			writableUsername.set('');
 
 			await goto('/', { replaceState: true, invalidateAll: true });
 		} catch (err) {

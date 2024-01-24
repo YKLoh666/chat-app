@@ -1,17 +1,59 @@
 <script lang="ts">
-	import { writableContactList } from '$lib/stores/ContactListStore';
+	import {
+		morphContactList,
+		writableContactList,
+		type ChatroomFromDB
+	} from '$lib/stores/ContactListStore';
+	import { onMount } from 'svelte';
 	import ChatroomButton from './ChatroomButton.svelte';
+	import { PUBLIC_BASE_URL } from '$env/static/public';
+	import axios from 'axios';
+	import { writableUsername } from '$lib/stores/UserStore';
+
+	$: contactList = $writableContactList;
+
+	let sentinel: HTMLDivElement;
+
+	onMount(() => {
+		let isLoading = false;
+		if (typeof IntersectionObserver !== 'undefined') {
+			const observer = new IntersectionObserver(async (entries) => {
+				const firstEntry = entries[0];
+				if (firstEntry.isIntersecting && contactList.length && !isLoading) {
+					console.log('User scrolled to the top');
+					isLoading = true;
+					const data: { chatrooms: ChatroomFromDB[] } = (
+						await axios.get(`${PUBLIC_BASE_URL}/api/chatrooms?skip=${contactList.length}`, {
+							withCredentials: true
+						})
+					).data;
+
+					if (!data.chatrooms.length) observer.disconnect();
+
+					contactList = [...contactList, ...morphContactList(data.chatrooms, $writableUsername)];
+					isLoading = false;
+				}
+			});
+			observer.observe(sentinel);
+		}
+	});
 </script>
 
-<div class="h-full border w-20 box-border flex-grow-0 flex-shrink-0 md:w-96">
-	<h1 class="text-2xl font-bold p-4">Chats</h1>
-	<div class="overflow-y-auto h-[81vh]">
-		{#key $writableContactList}
-			{#each $writableContactList as chatroom (chatroom._id)}
-				<ChatroomButton {chatroom} />
-			{:else}
-				<p>Loading...</p>
-			{/each}
-		{/key}
-	</div>
+<div class="overflow-y-auto h-full md:h-[81vh]" id="contact-list">
+	{#key contactList}
+		{#each contactList as chatroom (chatroom._id)}
+			<ChatroomButton {chatroom} />
+		{:else}
+			<p>Loading...</p>
+		{/each}
+	{/key}
+	<div bind:this={sentinel} style="height: 1px;"></div>
 </div>
+
+<style lang="postcss">
+	@media (max-width: 768px) {
+		#contact-list::-webkit-scrollbar {
+			display: none !important;
+		}
+	}
+</style>

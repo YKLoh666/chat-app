@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { writableUsername } from '$lib/stores/UserStore';
-
+	import Profile from './images/profile.png';
 	export let sent_by: { username: string } | undefined;
 	export let message: string;
 	export let updatedAt: Date;
@@ -8,10 +8,10 @@
 
 {#if sent_by}
 	{#if sent_by.username === $writableUsername}
-		<div class="flex items-center mb-2 flex-row-reverse">
-			<div class="bg-gray-400 w-6 h-6 rounded-2xl inline-block ml-2"></div>
+		<div class="flex items-center mb-1 flex-row-reverse">
+			<img class="w-6 h-6 rounded-full inline-block ml-2" src={Profile} alt="profile img" />
 			<div
-				class="bg-sky-200 inline-block px-4 py-1 rounded-2xl"
+				class="bg-sky-200 inline-block px-4 py-1 rounded-md"
 				title={new Date(updatedAt).toLocaleTimeString('en-US', {
 					hour: 'numeric',
 					minute: 'numeric'
@@ -21,10 +21,10 @@
 			</div>
 		</div>
 	{:else}
-		<div class="flex items-center mb-2">
-			<div class="bg-gray-400 w-6 h-6 rounded-2xl inline-block mr-2"></div>
+		<div class="flex items-center mb-1">
+			<img class="w-6 h-6 rounded-full inline-block mr-2" src={Profile} alt="profile img" />
 			<div
-				class="bg-sky-200 inline-block px-4 py-1 rounded-2xl"
+				class="bg-gray-200 inline-block px-4 py-1 rounded-md"
 				title={new Date(updatedAt).toLocaleTimeString('en-US', {
 					hour: 'numeric',
 					minute: 'numeric'
@@ -35,21 +35,20 @@
 		</div>
 	{/if}
 {:else}
-	<div class="flex items-center justify-center mb-2">
-		<div class="text-gray-500 inline-block px-4 py-1 rounded-2xl">
-			{`${message} · ${new Date(updatedAt).toLocaleDateString(
-				'en-US',
+	<div class="flex items-center justify-center mb-1">
+		<div class="text-gray-500 inline-block px-4 py-1 rounded-md">
+			{`${message} · ${
 				Date.now() - new Date(updatedAt).getTime() < 24 * 60 * 60 * 1000
-					? {
+					? new Date(updatedAt).toLocaleTimeString('en-US', {
 							hour: 'numeric',
 							minute: 'numeric'
-						}
-					: {
+						})
+					: new Date(updatedAt).toLocaleDateString('en-US', {
 							day: 'numeric',
 							month: 'short',
 							year: 'numeric'
-						}
-			)}`}
+						})
+			}`}
 		</div>
 	</div>
 {/if}

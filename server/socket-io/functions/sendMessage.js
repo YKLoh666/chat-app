@@ -33,7 +33,7 @@ export const sendMessage = async (
  * @property {string} room_type
  * @property {string} name
  * @property {Array<{username: string, socket_id: string}>} members
- * @property {string} message_updated
+ * @property {string} newest_message
  * @property {Array<{user: {username: string}, message_seen: number, seen_date: Date}>} message_seen_list
  */
 
@@ -83,7 +83,8 @@ const saveSentMessage = async (uid, message, chatroom) => {
 
     await messageDoc.save();
 
-    chatroom.message_updated = messageDoc._id;
+    chatroom.newest_message = messageDoc._id;
+    chatroom.newest_message_updatedAt = messageDoc.updatedAt;
 
     await chatroom.save();
   } catch (err) {

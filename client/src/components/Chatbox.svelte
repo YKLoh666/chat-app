@@ -4,6 +4,7 @@
 	import { writableMessages } from '$lib/stores/MessageStore';
 	import { socket } from '$lib/stores/SocketStore';
 	import { writableUsername } from '$lib/stores/UserStore';
+	import autosize from 'svelte-autosize';
 
 	$: message = '';
 
@@ -28,6 +29,14 @@
 			message = '';
 		}
 	}
+
+	// shiftEnterHandler function for replace enter to add new line become shift enter to add new line
+	function shiftEnterHandler(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			submitText();
+		}
+	}
 </script>
 
 <form
@@ -35,6 +44,13 @@
 	method="post"
 	on:submit|preventDefault={submitText}
 >
-	<input type="text" class="w-11/12 rounded-full px-4 focus:outline-none" bind:value={message} />
+	<!-- svelte-ignore a11y-autofocus -->
+	<textarea
+		class="w-11/12 h-4 resize-none rounded mr-2 px-2 py-1 focus:outline-none"
+		bind:value={message}
+		use:autosize
+		on:keydown={shiftEnterHandler}
+		autofocus={true}
+	></textarea>
 	<button class="bg-sky-600 p-1 px-3 rounded text-white">Send</button>
 </form>

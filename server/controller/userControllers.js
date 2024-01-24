@@ -20,9 +20,11 @@ export const validateUser = async (req, res) => {
     const user = await UserModel.findById(uid, { username: 1 });
 
     if (user) return res.json({ validated: true, username: user.username });
+    else throw new Error(`Couldn't find user with uid ${uid}`);
   } catch (error) {
     console.error(error);
     res = invalidateToken(res);
+    res.status(404);
     return res.json({ validated: false });
   }
 };

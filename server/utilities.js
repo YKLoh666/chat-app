@@ -49,6 +49,7 @@ export const createDuoChatrooms = async (newUser) => {
 
       chatrooms.push({
         room_type,
+        name: "",
         members: room_type === "DUO" ? [user._id, newUser._id] : [newUser._id],
         message_seen_list:
           room_type === "DUO"
@@ -62,24 +63,6 @@ export const createDuoChatrooms = async (newUser) => {
     );
 
     await ChatRoomModel.insertMany(chatroomDocuments);
-
-    const messageDocuments = chatroomDocuments.map(
-      (chatroomDocument) =>
-        new MessageModel({
-          chatroom: chatroomDocument._id,
-          message: "Chatroom created",
-        })
-    );
-
-    await MessageModel.insertMany(messageDocuments);
-
-    messageDocuments.forEach(
-      async (messageDoc) =>
-        await ChatRoomModel.findByIdAndUpdate(messageDoc.chatroom, {
-          newest_message: messageDoc._id,
-          newest_message_updatedAt: messageDoc.updatedAt,
-        })
-    );
 
     return;
   } catch (err) {

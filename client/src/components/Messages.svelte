@@ -58,6 +58,12 @@
 	{#if messages}
 		{#each messages as { sent_by, message, updatedAt }}
 			<Message {sent_by} {message} {updatedAt} />
+		{:else}
+			<Message
+				sent_by={undefined}
+				message="Send a message to start the conversation"
+				updatedAt={new Date()}
+			/>
 		{/each}
 	{:else}
 		<p class="flex justify-center">Loading...</p>

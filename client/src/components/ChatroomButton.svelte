@@ -9,23 +9,45 @@
 	const {
 		_id,
 		name,
+		room_type,
 		message_seen: { index },
-		newest_message: { message, updatedAt, sent_by }
+		newest_message: { message, updatedAt, sent_by },
+		active
 	} = chatroom;
 </script>
 
 <a
 	class={`flex justify-around items-center w-full text-left relative h-18 ${
-		$page.params.chatroomid === chatroom._id && 'bg-sky-100'
+		$page.params.chatroomid === chatroom._id && 'md:bg-sky-100'
 	} hover:bg-neutral-100`}
 	href={`/chat/${_id}`}
 >
-	<img
-		src={Profile}
-		alt="profile"
-		class="w-10 md:w-12 rounded-full mx-2 my-2 md:my-4 shadow-[0px_1px_4px_#0005]"
-	/>
-	<div class="flex-col justify-between h-20 hidden md:flex">
+	<div class="relative mx-2 my-2 md:my-4">
+		<img
+			src={Profile}
+			alt="profile"
+			class="w-10 md:w-12 rounded-full shadow-[0px_1px_4px_#0005] {$page.params.chatroomid ===
+				chatroom._id && 'border-2 md:border-none border-sky-500'}"
+		/>
+
+		<div class="absolute right-0 bottom-0">
+			{#if index}
+				<div
+					class="w-4 h-4 text-xs bg-red-500 rounded-full flex justify-center items-center text-white md:hidden"
+				>
+					{index}
+				</div>
+			{:else}
+				<div
+					class="bg-green-400 w-4 h-4 rounded-full border-2 border-white {room_type === 'DUO' &&
+					active
+						? 'block'
+						: 'hidden'}"
+				></div>
+			{/if}
+		</div>
+	</div>
+	<div class="flex-col justify-between h-20 hidden w-[70%] md:flex">
 		<div
 			class="text-ellipsis w-64 text-nowrap overflow-hidden text-black h-10 flex items-end
 			{index ? 'font-bold' : ''}"
@@ -33,12 +55,15 @@
 			{name}
 		</div>
 		<div
-			class="text-ellipsis w-64 text-nowrap overflow-hidden text-xs h-9 items-start
+			class="w-64 text-nowrap overflow-hidden text-xs h-9 items-start flex
 			{index ? 'font-bold' : 'text-gray-500'}"
 		>
-			{`${
-				sent_by && sent_by.username === $writableUsername ? 'You: ' : ''
-			} ${message} · ${getTimeDifference(new Date(), new Date(updatedAt))}`}
+			<span
+				class="text-ellipsis overflow-hidden inline-block max-w-[calc(100%-40px)] items-center whitespace-nowrap"
+			>
+				{`${sent_by && sent_by.username === $writableUsername ? 'You: ' : ''} ${message}`}</span
+			>
+			&nbsp;·&nbsp; <span>{`${getTimeDifference(new Date(), new Date(updatedAt))}`}</span>
 		</div>
 	</div>
 	<div class="flex-col justify-between h-20 hidden md:flex">
@@ -52,14 +77,5 @@
 			{/if}
 		</div>
 		<div></div>
-	</div>
-	<div class="absolute">
-		{#if index}
-			<div class="w-6 h-6 bg-red-500 rounded-full flex justify-center items-center text-white">
-				{index}
-			</div>
-		{:else}
-			<div class="w-5 h-5 rounded-full text-center text-white leading-[1.15rem]"></div>
-		{/if}
 	</div>
 </a>

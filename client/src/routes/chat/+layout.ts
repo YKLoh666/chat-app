@@ -5,7 +5,7 @@ import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ fetch, url }) => {
 	const { validated, username } = await (
-		await fetch(`${PUBLIC_BASE_URL}/api/users`, { credentials: 'include' })
+		await fetch(`${PUBLIC_BASE_URL}/api/users/validate`, { credentials: 'include' })
 	).json();
 	// redirect cannot be inside try/catch block
 	if (!validated) redirect(307, `/?redirect=${url.pathname}${url.search}`);

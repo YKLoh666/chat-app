@@ -9,6 +9,55 @@ import {
 } from "../utilities.js";
 import UserModel from "../db/Model/UserModel.js";
 
+export const searchUsers = async (req, res) => {
+  const searchString = decodeURIComponent(req.query.search);
+  const skip = Number(req.query.skip);
+  try {
+    const users = await UserModel.aggregate([
+      {
+        $match: {
+          username: {
+            $regex: searchString,
+            $options: "i",
+          },
+        },
+      },
+      {
+        $project: {
+          username: 1,
+          active: 1,
+          _id: 0,
+        },
+      },
+      {
+        $addFields: {
+          matchIndex: {
+            $indexOfCP: [{ $toLower: "$username" }, { $toLower: searchString }],
+          },
+        },
+      },
+      {
+        $sort: {
+          matchIndex: 1,
+          username: 1,
+        },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    return res.json({ users });
+  } catch (error) {
+    console.error(error);
+    res.status(500);
+    return res.json({ success: false, message: "Internal server error" });
+  }
+};
+
 export const validateUser = async (req, res) => {
   if (!req.signedCookies.jwt) return res.json({ validated: false });
   try {

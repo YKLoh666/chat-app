@@ -14,7 +14,7 @@ export const connectSocket = (socket) => {
 
   socket.on("update seen list", (data) => updateSeenList(data));
 
-  socket.on("disconnect", () => disconnect(store, socket));
+  socket.on("logout", () => disconnect(store, socket));
 
   socket.on("error", (err) => console.log(err));
 };

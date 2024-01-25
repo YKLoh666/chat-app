@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { writableChatroom } from '$lib/stores/ChatroomStore';
 	import { writableContactList } from '$lib/stores/ContactListStore';
 	import { writableMessages } from '$lib/stores/MessageStore';
 	import { socket } from '$lib/stores/SocketStore';
@@ -10,6 +11,8 @@
 
 	function submitText() {
 		if (message && socket.id) {
+			console.log($writableContactList);
+
 			socket.emit('send message', {
 				username: $writableUsername,
 				message,
@@ -19,7 +22,12 @@
 				sent_by: { username: $writableUsername },
 				updatedAt: new Date(),
 				message,
-				chatroom: { _id: $page.url.pathname.substring(6) }
+				chatroom: {
+					_id: $writableChatroom?._id || $page.url.pathname.substring(6),
+					active: $writableChatroom?.active,
+					name: $writableChatroom?.name,
+					room_type: $writableChatroom?.room_type
+				}
 			});
 			writableMessages.update((existingMessages) => [
 				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() },

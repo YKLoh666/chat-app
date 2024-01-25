@@ -17,7 +17,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await axios.get(`${PUBLIC_BASE_URL}/api/users`, {
+			const response = await axios.get(`${PUBLIC_BASE_URL}/api/users/validate`, {
 				withCredentials: true
 			});
 			const { validated } = response.data;
@@ -49,15 +49,9 @@
 
 			if (success) {
 				if ($page.url.searchParams.get('redirect')) {
-					await goto(`${$page.url.searchParams.get('redirect')}`, {
-						invalidateAll: true,
-						replaceState: true
-					});
+					location.href = `${$page.url.searchParams.get('redirect')}`;
 				} else {
-					await goto('/chat', {
-						invalidateAll: true,
-						replaceState: true
-					});
+					location.href = '/chat';
 				}
 			} else {
 				alert(message);

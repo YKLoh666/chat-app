@@ -3,6 +3,7 @@
 	import axios from 'axios';
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
+	import { socket } from '$lib/stores/SocketStore';
 
 	export let route: string;
 
@@ -15,10 +16,11 @@
 			);
 			writableUsername.set('');
 
-			await goto('/', { replaceState: true, invalidateAll: true });
+			socket.emit('logout');
 		} catch (err) {
 			console.error(err);
 		}
+		location.href = '/';
 	};
 </script>
 

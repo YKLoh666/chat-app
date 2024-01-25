@@ -17,6 +17,8 @@ export const sendMessage = async (
   console.log(`Received message from ${socket.id}: ${message}`);
   const uid = socket.uid;
 
+  console.log(username);
+
   const { found, chatroom } = await verifyAuth(uid, chatroomid, socket);
   if (!found) {
     console.error("User is not authorized to send message in this chatroom");
@@ -32,7 +34,7 @@ export const sendMessage = async (
  * @property {string} _id
  * @property {string} room_type
  * @property {string} name
- * @property {Array<{username: string, socket_id: string}>} members
+ * @property {Array<{username: string, socket_id: string, active: boolean}>} members
  * @property {string} newest_message
  * @property {Array<{user: {username: string}, message_seen: number, seen_date: Date}>} message_seen_list
  */
@@ -49,7 +51,7 @@ const verifyAuth = async (uid, chatroomid, socket) => {
     const chatroom = await ChatRoomModel.findById(chatroomid)
       .populate({
         path: "members",
-        select: { socket_id: 1 },
+        select: { username: 1, socket_id: 1, active: 1 },
       })
       .populate({
         path: "message_seen_list",
@@ -111,6 +113,9 @@ const sendReceivedMessage = async (username, message, chatroom, socket) => {
         chatroom: {
           _id: chatroom._id,
           room_type: chatroom.room_type,
+          active: chatroom.members.find(
+            (member) => member.username !== username
+          ).active,
           name: chatroom.room_type === "GROUP" ? chatroom.name : username,
           message_seen_list: chatroom.message_seen_list,
         },

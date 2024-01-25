@@ -41,10 +41,12 @@
 
 <div class="overflow-y-auto h-full md:h-[81vh]" id="contact-list">
 	{#key contactList}
-		{#each contactList as chatroom (chatroom._id)}
+		{#each contactList as chatroom}
 			<ChatroomButton {chatroom} />
 		{:else}
-			<p>Loading...</p>
+			<p class="flex justify-center items-center h-[50vh] p-8 text-lg text-center">
+				Search for your friend's username and start to CHAT!
+			</p>
 		{/each}
 	{/key}
 	<div bind:this={sentinel} style="height: 1px;"></div>

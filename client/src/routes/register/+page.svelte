@@ -17,7 +17,7 @@
 	onMount(async () => {
 		try {
 			const { validated, username } = (
-				await axios.get(`${PUBLIC_BASE_URL}/api/users`, { withCredentials: true })
+				await axios.get(`${PUBLIC_BASE_URL}/api/users/validate`, { withCredentials: true })
 			).data;
 			if (validated) await goto('/chat', { invalidateAll: true, replaceState: true });
 			writableUsername.set(username);
@@ -43,7 +43,7 @@
 
 			if (data.success) {
 				alert('Successfully registered user.');
-				await goto('/chat', { invalidateAll: true, replaceState: true });
+				location.href = '/chat';
 			} else {
 				console.error(data.message);
 				alert(data.message);

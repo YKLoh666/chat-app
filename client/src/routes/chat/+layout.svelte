@@ -24,14 +24,12 @@
 </script>
 
 <main class="h-[90vh] min-w-[320px] box-border flex">
-	<div
-		class="h-full border w-[15%] box-border flex-grow-0 flex-shrink-0 md:w-96 2xl:w-1/5 flex flex-col"
-	>
-		<h1 class="text-2xl font-bold p-4 pb-0 hidden self-start md:block">Chats</h1>
+	<div class="h-full border w-20 box-border flex-grow-0 flex-shrink-0 lg:w-96 flex flex-col">
+		<h1 class="text-2xl font-bold p-4 pb-0 hidden self-start lg:block">Chats</h1>
 		<Searchbox />
 		<ContactList />
 	</div>
-	<div class="flex flex-col h-full w-[85%] md:w-3/4 2xl:w-4/5">
+	<div class="flex flex-col h-full w-full">
 		<slot />
 	</div>
 </main>

@@ -56,11 +56,11 @@
 	};
 </script>
 
-<div class="m-3 w-11/12 relative hidden justify-center md:flex flex-col">
+<div class="m-3 w-11/12 relative hidden justify-center lg:flex flex-col">
 	<SearchIcon />
 	<input
 		type="text"
-		class="w-full p-1 pl-8 rounded-md border self-center hidden md:block"
+		class="w-full p-1 pl-8 rounded-md border self-center hidden lg:block"
 		placeholder="Search"
 		bind:value={searchString}
 		on:focus={focused}
@@ -80,8 +80,10 @@
 			{#each result as user}
 				<!-- Show profile picture, username and active status -->
 				<button
-					class="w-full p-3 rounded-md hidden md:flex justify-between items-center hover:bg-gray-100"
+					class="w-full p-3 rounded-md hidden lg:flex justify-between items-center hover:bg-gray-100"
 					on:click={() => navigate(user.username)}
+					on:focus={focused}
+					on:blur={blurred}
 				>
 					<img class="w-12 h-12 rounded-full" src={Profile} alt="Profile" />
 					<p class="text-lg text-gray-600">

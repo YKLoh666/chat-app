@@ -8,10 +8,10 @@
 
 {#if sent_by}
 	{#if sent_by.username === $writableUsername}
-		<div class="flex items-center mb-1 flex-row-reverse">
+		<div class="flex items-end mb-1 flex-row-reverse">
 			<img class="w-6 h-6 rounded-full inline-block ml-2" src={Profile} alt="profile img" />
 			<div
-				class="bg-sky-200 inline-block px-4 py-1 rounded-md break-words max-w-72 sm:max-w-sm md:max-w-xs lg:max-w-lg"
+				class="bg-sky-200 inline-block px-4 py-1 rounded-md break-words max-w-xs md:max-w-lg"
 				title={new Date(updatedAt).toLocaleTimeString('en-US', {
 					hour: 'numeric',
 					minute: 'numeric'
@@ -24,7 +24,7 @@
 		<div class="flex items-center mb-1">
 			<img class="w-6 h-6 rounded-full inline-block mr-2" src={Profile} alt="profile img" />
 			<div
-				class="bg-gray-200 inline-block px-4 py-1 rounded-md break-words max-w-72 sm:max-w-sm md:max-w-xs lg:max-w-lg"
+				class="bg-gray-200 inline-block px-4 py-1 rounded-md break-words max-w-xs md:max-w-lg"
 				title={new Date(updatedAt).toLocaleTimeString('en-US', {
 					hour: 'numeric',
 					minute: 'numeric'

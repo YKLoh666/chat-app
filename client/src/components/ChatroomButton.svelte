@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import { getTimeDifference } from '$lib/utilities';
 	import type { Chatroom } from '$lib/stores/ContactListStore';
+	import { writableChatroom } from '$lib/stores/ChatroomStore';
 
 	export let chatroom: Chatroom;
 	const {
@@ -17,23 +18,23 @@
 </script>
 
 <a
-	class={`flex justify-around items-center w-full text-left relative h-18 ${
-		$page.params.chatroomid === chatroom._id && 'md:bg-sky-100'
+	class={`flex justify-around items-center w-full text-left relative h-18 cursor-pointer ${
+		$page.params.chatroomid === chatroom._id && 'lg:bg-sky-100'
 	} hover:bg-neutral-100`}
-	href={`/chat/${_id}`}
+	href={_id !== $page.url.pathname.substring(6) ? `/chat/${_id}` : undefined}
 >
-	<div class="relative mx-2 my-2 md:my-4">
+	<div class="relative mx-2 my-2 lg:my-4">
 		<img
 			src={Profile}
 			alt="profile"
-			class="w-10 md:w-12 rounded-full shadow-[0px_1px_4px_#0005] {$page.params.chatroomid ===
-				chatroom._id && 'border-2 md:border-none border-sky-500'}"
+			class="w-12 rounded-full shadow-[0px_1px_4px_#0005] {$page.params.chatroomid ===
+				chatroom._id && 'border-2 lg:border-none border-sky-500'}"
 		/>
 
 		<div class="absolute right-0 bottom-0">
 			{#if index}
 				<div
-					class="w-4 h-4 text-xs bg-red-500 rounded-full flex justify-center items-center text-white md:hidden"
+					class="w-4 h-4 text-xs bg-red-500 rounded-full flex justify-center items-center text-white lg:hidden"
 				>
 					{index}
 				</div>
@@ -47,7 +48,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="flex-col justify-between h-20 hidden w-[70%] md:flex">
+	<div class="flex-col justify-between h-20 hidden w-[70%] lg:flex">
 		<div
 			class="text-ellipsis w-64 text-nowrap overflow-hidden text-black h-10 flex items-end
 			{index ? 'font-bold' : ''}"
@@ -66,7 +67,7 @@
 			&nbsp;·&nbsp; <span>{`${getTimeDifference(new Date(), new Date(updatedAt))}`}</span>
 		</div>
 	</div>
-	<div class="flex-col justify-between h-20 hidden md:flex">
+	<div class="flex-col justify-between h-20 hidden lg:flex">
 		<div class="h-9 flex items-end justify-center">
 			{#if index}
 				<div class="w-6 h-6 bg-red-500 rounded-full flex justify-center items-center text-white">

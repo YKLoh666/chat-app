@@ -39,7 +39,7 @@
 	});
 </script>
 
-<div class="overflow-y-auto h-full md:h-[81vh]" id="contact-list">
+<div class="overflow-y-auto h-full lg:h-[81vh]" id="contact-list">
 	{#key contactList}
 		{#each contactList as chatroom}
 			<ChatroomButton {chatroom} />

@@ -55,7 +55,7 @@
 </script>
 
 <form
-	class="w-5/6 box-border mx-auto my-24 flex flex-col items-center border rounded-md p-0 pb-10 shadow-lg lg:w-1/3 md:p-4"
+	class="w-5/6 box-border mx-auto my-24 flex flex-col items-center border rounded-md p-0 pb-10 shadow-lg lg:w-1/3 lg:p-4"
 	on:submit|preventDefault={handleSubmit}
 >
 	<h1 class="text-2xl m-4">Register</h1>

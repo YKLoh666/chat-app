@@ -11,12 +11,15 @@ export const authMiddleware = async (socket, next) => {
   const token = getToken(socket);
   if (!token) return;
 
-  const { uid } = await jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-
-  if (!uid) return;
-  else {
-    socket.uid = uid;
-    next();
+  try {
+    const { uid } = await jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    if (!uid) return;
+    else {
+      socket.uid = uid;
+      next();
+    }
+  } catch (err) {
+    return;
   }
 };
 

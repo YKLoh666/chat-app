@@ -76,7 +76,7 @@ Create a `.env` file at the root folder and add the following environment variab
 
 1. `NODE_ENV` "development" or "production"
 
-2. `MONGO_URI` To establish connection to the local/atlas database server. Usually local mongodb server is run with URI "mongodb://0.0.0.0:27017/database-name"
+2. `MONGO_URI` To establish connection to the local/atlas database server. A MongoDB database server is required, could be either local version or cloud version (MongoDB Atlas). If the database server is setup locally, usually the URI will be "mongodb://0.0.0.0:27017/database-name" Learn more of MongoDB server setup here: [Local](https://www.mongodb.com/docs/manual/installation/#std-label-tutorial-installation), [Atlas](https://www.mongodb.com/docs/atlas/getting-started/)
 
 3. `COOKIE_SECRET` A secret random string that used to sign/unsign cookies when making API calls
 
@@ -84,7 +84,7 @@ Create a `.env` file at the root folder and add the following environment variab
 
 5. `PORT` The port where the application run at
 
-Create another two environment variables files call `.env.development` and `.env.production`. These two files has only one environment variable in it, which is `PUBLIC_BASE_URL`, which is used to specifies the base URL of the application when run in either node environment. As for running in local environment, set both of it to "http://localhost: (port specified in .env file, eg. 5000)".
+Create another two environment variables files call `.env.development` and `.env.production`. These two files has only one environment variable in it, which is `PUBLIC_BASE_URL` that used to specifies the base URL of the application when run in either node environment. As for running in local environment, set both of it to "http://localhost:5000" (change the port number according to the one specified in .env file, no trailing slash).
 
 Start the server
 

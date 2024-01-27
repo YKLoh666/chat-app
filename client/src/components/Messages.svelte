@@ -29,9 +29,7 @@
 					isLoading = true;
 					const data: { messages: MessageType[] } = (
 						await axios.get(
-							`${PUBLIC_BASE_URL}/api/messages/${$page.url.pathname.substring(6)}?skip=${
-								messages.length
-							}`,
+							`${PUBLIC_BASE_URL}/api/messages/${$page.params.chatroomid}?skip=${messages.length}`,
 							{
 								withCredentials: true
 							}

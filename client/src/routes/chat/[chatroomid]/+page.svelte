@@ -17,7 +17,7 @@
 	let messageSet = false;
 	$: if ($writableUsername && !messageSet) {
 		writableMessages.setMessages(
-			$page.url.pathname.substring(6),
+			$page.params.chatroomid,
 			$writableUsername,
 			data.messages as Message[]
 		);

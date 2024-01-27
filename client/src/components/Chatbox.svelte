@@ -10,24 +10,19 @@
 	$: message = '';
 
 	function submitText() {
-		if (message && socket.id) {
+		if (message && socket.id && $writableChatroom) {
 			console.log($writableContactList);
 
 			socket.emit('send message', {
 				username: $writableUsername,
 				message,
-				chatroom: $page.url.pathname.substring(6)
+				chatroom: $page.params.chatroomid
 			});
 			writableContactList.updateAtReceiveMessage({
 				sent_by: { username: $writableUsername },
 				updatedAt: new Date(),
 				message,
-				chatroom: {
-					_id: $writableChatroom?._id || $page.url.pathname.substring(6),
-					active: $writableChatroom?.active,
-					name: $writableChatroom?.name,
-					room_type: $writableChatroom?.room_type
-				}
+				chatroom: $writableChatroom
 			});
 			writableMessages.update((existingMessages) => [
 				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() },

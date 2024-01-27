@@ -4,7 +4,6 @@
 	import { page } from '$app/stores';
 	import { getTimeDifference } from '$lib/utilities';
 	import type { Chatroom } from '$lib/stores/ContactListStore';
-	import { writableChatroom } from '$lib/stores/ChatroomStore';
 
 	export let chatroom: Chatroom;
 	const {
@@ -21,14 +20,19 @@
 	class={`flex justify-around items-center w-full text-left relative h-18 cursor-pointer ${
 		$page.params.chatroomid === chatroom._id && 'lg:bg-sky-100'
 	} hover:bg-neutral-100`}
-	href={_id !== $page.url.pathname.substring(6) ? `/chat/${_id}` : undefined}
+	href={_id !== $page.params.chatroomid ? `/chat/${_id}` : undefined}
 >
 	<div class="relative mx-2 my-2 lg:my-4">
+		<div
+			class="absolute rounded-md bg-sky-400 w-1.5 -left-3 top-1/2 transform -translate-y-1/2 h-8
+			{$page.params.chatroomid !== _id && 'hidden'} lg:hidden"
+		></div>
 		<img
 			src={Profile}
 			alt="profile"
-			class="w-12 rounded-full shadow-[0px_1px_4px_#0005] {$page.params.chatroomid ===
-				chatroom._id && 'border-2 lg:border-none border-sky-500'}"
+			class="w-12 {$page.params.chatroomid !== _id
+				? 'rounded-full'
+				: 'rounded-xl'} shadow-[0px_1px_4px_#0005] lg:rounded-full"
 		/>
 
 		<div class="absolute right-0 bottom-0">

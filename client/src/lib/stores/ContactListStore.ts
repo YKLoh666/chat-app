@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
-import { writableUsername } from './UserStore';
 import { page } from '$app/stores';
+import { writableUsername } from './UserStore';
 
 export type Chatroom = {
 	_id: string;
@@ -66,13 +66,7 @@ function createContactListStore(initialValue: Chatroom[]) {
 		sent_by: { username: string };
 		updatedAt: Date;
 		message: string;
-		chatroom: {
-			_id: string;
-			name?: string;
-			room_type?: string;
-			message_seen_list?: { user: { username: string }; message_seen: number; seen_date: Date }[];
-			active?: boolean;
-		};
+		chatroom: Chatroom;
 	}) => {
 		contactListStore.update((contactList) => {
 			const updatedList = [...contactList];
@@ -80,17 +74,9 @@ function createContactListStore(initialValue: Chatroom[]) {
 
 			if (index === -1 && chatroom.name && chatroom.room_type) {
 				updatedList.unshift({
-					_id: chatroom._id,
-					room_type: chatroom.room_type,
-					name: chatroom.name,
-					active: chatroom.active || false,
-					members: [sent_by, { username: get(writableUsername) }],
+					...chatroom,
 					message_seen: {
-						index:
-							chatroom.message_seen_list?.find((m) => m.user.username === get(writableUsername))
-								?.message_seen || get(page).url.pathname.substring(6) === chatroom._id
-								? 0
-								: 1,
+						index: sent_by.username === get(writableUsername) ? 0 : 1,
 						date: new Date()
 					},
 					newest_message: {
@@ -109,7 +95,7 @@ function createContactListStore(initialValue: Chatroom[]) {
 					members: movedChatroom.members,
 					message_seen: {
 						index:
-							get(page).url.pathname.substring(6) === chatroom._id
+							get(page).params.chatroomid === chatroom._id
 								? 0
 								: movedChatroom.message_seen.index + 1,
 						date: new Date()
@@ -179,7 +165,7 @@ export const morphChatroom = (chatroom: ChatroomFromDB, username: string) => {
 		_id: chatroom._id,
 		room_type: chatroom.room_type,
 		name,
-		active: chatroom.members.find((member) => member.username !== get(writableUsername))?.active,
+		active: chatroom.members.find((member) => member.username !== username)?.active,
 		members: chatroom.members,
 		message_seen: {
 			index: message_seen_obj?.message_seen ?? 0,

@@ -37,7 +37,7 @@ addListener(
 		console.log('message received');
 
 		writableContactList.updateAtReceiveMessage(data);
-		if (get(page).url.pathname.substring(6) === data.chatroom._id) {
+		if (get(page).params.chatroomid === data.chatroom._id) {
 			writableMessages.updateMessages(
 				data.chatroom._id,
 				get(writableUsername),

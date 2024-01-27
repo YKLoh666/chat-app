@@ -23,6 +23,10 @@
 	});
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex nofollow" />
+</svelte:head>
+
 <main class="h-[90vh] min-w-[320px] box-border flex">
 	<div class="h-full border w-20 box-border flex-grow-0 flex-shrink-0 lg:w-96 flex flex-col">
 		<h1 class="text-2xl font-bold p-4 pb-0 hidden self-start lg:block">Chats</h1>

@@ -33,3 +33,6 @@ export const search = async (searchString: string, skip: number) => {
 		return false;
 	}
 };
+
+export const generateProfile = (seed: string) =>
+	`https://api.dicebear.com/7.x/initials/svg?seed=${seed}&fontFamily=Verdana&fontSize=51&backgroundColor=00897b,1e88e5,43a047,5e35b1,8e24aa,c0ca33,d81b60,f4511e,ffb300`;

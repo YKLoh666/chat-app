@@ -10,6 +10,8 @@
 	let sentinel: HTMLDivElement;
 
 	type MessageType = {
+		_id: string;
+		createdAt: Date;
 		updatedAt: Date;
 		message: string;
 		sent_by:

@@ -25,7 +25,12 @@
 				chatroom: $writableChatroom
 			});
 			writableMessages.update((existingMessages) => [
-				{ sent_by: { username: $writableUsername }, message, updatedAt: new Date() },
+				{
+					sent_by: { username: $writableUsername },
+					message,
+					updatedAt: new Date(),
+					createdAt: new Date()
+				},
 				...existingMessages
 			]);
 
@@ -35,7 +40,7 @@
 
 	// shiftEnterHandler function for replace enter to add new line become shift enter to add new line
 	function shiftEnterHandler(event: KeyboardEvent) {
-		if (event.key === 'Enter') {
+		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
 			submitText();
 		}

@@ -12,10 +12,10 @@ export const getMessages = async (req, res) => {
     const messages = await MessageModel.find(
       { chatroom: chatroomid },
       {
+        createdAt: 1,
         updatedAt: 1,
         message: 1,
         sent_by: 1,
-        _id: 0,
       }
     )
       .sort("-createdAt")

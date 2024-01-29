@@ -66,7 +66,19 @@ function createContactListStore(initialValue: Chatroom[]) {
 		sent_by: { username: string };
 		updatedAt: Date;
 		message: string;
-		chatroom: Chatroom;
+		chatroom: {
+			_id: string;
+			room_type: string;
+			name: string;
+			active: boolean;
+			members: {
+				username: string;
+			}[];
+			message_seen: {
+				index: number;
+				date: Date;
+			};
+		};
 	}) => {
 		contactListStore.update((contactList) => {
 			const updatedList = [...contactList];
@@ -158,7 +170,7 @@ export const morphChatroom = (chatroom: ChatroomFromDB, username: string) => {
 		const otherMember = chatroom.members?.find((val) => val.username !== username);
 		name = otherMember ? otherMember.username : 'unknown';
 	} else {
-		name = `${username} (me)`;
+		name = `${username}`;
 	}
 
 	return {

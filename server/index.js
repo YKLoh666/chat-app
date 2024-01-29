@@ -13,7 +13,6 @@ dotenv.config();
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import UserModel from "./db/Model/UserModel.js";
 import { connectSocket } from "./socket-io/connect.js";
 import { authMiddleware } from "./socket-io/functions/socketAuthMiddleware.js";
 

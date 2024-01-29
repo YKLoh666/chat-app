@@ -1,8 +1,7 @@
 <script lang="ts">
-	import Profile from './images/profile.png';
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { page } from '$app/stores';
-	import { getTimeDifference } from '$lib/utilities';
+	import { generateProfile, getTimeDifference } from '$lib/utilities';
 	import type { Chatroom } from '$lib/stores/ContactListStore';
 
 	export let chatroom: Chatroom;
@@ -14,6 +13,7 @@
 		newest_message: { message, updatedAt, sent_by },
 		active
 	} = chatroom;
+	const chatroomTitle = name === $writableUsername ? `${name} (me)` : name;
 </script>
 
 <a
@@ -28,7 +28,7 @@
 			{$page.params.chatroomid !== _id && 'hidden'} lg:hidden"
 		></div>
 		<img
-			src={Profile}
+			src={generateProfile(name)}
 			alt="profile"
 			class="w-12 {$page.params.chatroomid !== _id
 				? 'rounded-full'
@@ -57,7 +57,7 @@
 			class="text-ellipsis w-64 text-nowrap overflow-hidden text-black h-10 flex items-end
 			{index ? 'font-bold' : ''}"
 		>
-			{name}
+			{chatroomTitle}
 		</div>
 		<div
 			class="w-64 text-nowrap overflow-hidden text-xs h-9 items-start flex

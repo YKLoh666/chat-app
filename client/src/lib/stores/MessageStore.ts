@@ -3,6 +3,8 @@ import { socket } from './SocketStore';
 import { writableContactList } from './ContactListStore';
 
 export type Message = {
+	_id?: string;
+	createdAt: Date;
 	updatedAt: Date;
 	message: string;
 	sent_by:

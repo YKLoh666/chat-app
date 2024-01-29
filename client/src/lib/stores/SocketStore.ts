@@ -31,12 +31,23 @@ addListener(
 			_id: string;
 			name: string;
 			room_type: string;
+			active: boolean;
+			members: {
+				username: string;
+				active: boolean;
+			}[];
 			message_seen_list: { user: { username: string }; message_seen: number; seen_date: Date }[];
 		};
 	}) => {
 		console.log('message received');
 
-		writableContactList.updateAtReceiveMessage(data);
+		writableContactList.updateAtReceiveMessage({
+			...data,
+			chatroom: {
+				...data.chatroom,
+				message_seen: { index: 0, date: new Date() }
+			}
+		});
 		if (get(page).params.chatroomid === data.chatroom._id) {
 			writableMessages.updateMessages(
 				data.chatroom._id,

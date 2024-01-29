@@ -1,7 +1,6 @@
 <script lang="ts">
 	import SearchIcon from './icons/Search.svelte';
-	import { search } from '$lib/utilities';
-	import Profile from './images/profile.png';
+	import { generateProfile, search } from '$lib/utilities';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
@@ -85,7 +84,7 @@
 					on:focus={focused}
 					on:blur={blurred}
 				>
-					<img class="w-12 h-12 rounded-full" src={Profile} alt="Profile" />
+					<img class="w-12 h-12 rounded-full" src={generateProfile(user.username)} alt="Profile" />
 					<p class="text-lg text-gray-600">
 						{user.username}
 					</p>

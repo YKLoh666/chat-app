@@ -19,7 +19,7 @@ This project has given me a new experience of working on a programming project, 
 ## Main Functions
 
 - Token based authentication and authorization to secure API routes and server requests
-- Find user through username and start real time chat with users on the server
+- Find user through username and start real time chat with users on the website
 
 ## Tech Stack
 

@@ -8,6 +8,19 @@ import {
   invalidateToken,
 } from "../utilities.js";
 import UserModel from "../db/Model/UserModel.js";
+import nodemailer from "nodemailer";
+
+const testAccount = await nodemailer.createTestAccount();
+
+const transporter = nodemailer.createTransport({
+  host: testAccount.smtp.host,
+  port: testAccount.smtp.port,
+  secure: testAccount.smtp.secure,
+  auth: {
+    user: testAccount.user,
+    pass: testAccount.pass,
+  },
+});
 
 export const searchUsers = async (req, res) => {
   const searchString = decodeURIComponent(req.query.search);
@@ -121,6 +134,33 @@ export const registerUser = async (req, res) => {
     console.error(message);
     return res.json({ success: false, message });
   }
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const token = 123456;
+
+  const message = {
+    from: "ykdev.noreply <noreply@ykdev.com>",
+    to: email,
+    subject: "Reset your password",
+    html:
+      "<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>" +
+      "<p>Please click on the following link, or paste this into your browser to complete the process:</p>" +
+      `<a href="${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}">${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}</a>`,
+  };
+
+  transporter.sendMail(message, (err, info) => {
+    if (err) {
+      console.error(err.message);
+      res.status(500);
+      return res.json({ success: false });
+    }
+    console.log(`Recovery email sent: ${info.messageId}`);
+    const url = nodemailer.getTestMessageUrl(info);
+    console.log(`Preview URL: ${url}`);
+    res.json({ success: true, mail: url });
+  });
 };
 
 export const loginUser = async (req, res) => {

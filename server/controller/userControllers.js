@@ -1,13 +1,14 @@
 import isEmail from "validator/lib/isEmail.js";
 import User from "../db/Model/UserModel.js";
+import PasswordResetModel from "../db/Model/PasswordResetModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
   createDuoChatrooms,
+  createRandomString,
   createToken,
   invalidateToken,
 } from "../utilities.js";
-import UserModel from "../db/Model/UserModel.js";
 import nodemailer from "nodemailer";
 
 const testAccount = await nodemailer.createTestAccount();
@@ -26,7 +27,7 @@ export const searchUsers = async (req, res) => {
   const searchString = decodeURIComponent(req.query.search);
   const skip = Number(req.query.skip);
   try {
-    const users = await UserModel.aggregate([
+    const users = await User.aggregate([
       {
         $match: {
           username: {
@@ -79,7 +80,7 @@ export const validateUser = async (req, res) => {
       process.env.JWT_PRIVATE_KEY
     );
 
-    const user = await UserModel.findById(uid, { username: 1 });
+    const user = await User.findById(uid, { username: 1 });
 
     if (user) return res.json({ validated: true, username: user.username });
     else throw new Error(`Couldn't find user with uid ${uid}`);
@@ -138,7 +139,25 @@ export const registerUser = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  const token = 123456;
+
+  const userFile = await User.findOne({ email });
+
+  if (!userFile) {
+    return res.json({ success: false, message: "User not found" });
+  }
+
+  const resetPasswordInstance = await PasswordResetModel.findOne({
+    user: userFile._id,
+  });
+
+  if (resetPasswordInstance) {
+    return res.json({
+      success: false,
+      message: "Password reset email has been sent",
+    });
+  }
+
+  const token = createRandomString(30);
 
   const message = {
     from: "ykdev.noreply <noreply@ykdev.com>",
@@ -147,14 +166,34 @@ export const forgotPassword = async (req, res) => {
     html:
       "<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>" +
       "<p>Please click on the following link, or paste this into your browser to complete the process:</p>" +
-      `<a href="${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}">${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}</a>`,
+      `<a href="${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}">${process.env.PUBLIC_BASE_URL}/resetpassword?token=${token}</a>` +
+      "<p>The link will be not effective after 1 hour, please reset your password in the interval.</p>" +
+      "<p>If you are not the one who request for the password reset, please ignore this email.</p>",
   };
+
+  const passwordResetFile = new PasswordResetModel({
+    user: userFile._id,
+    token,
+  });
+
+  try {
+    await passwordResetFile.save();
+  } catch (error) {
+    res.status(500);
+    return res.json({
+      success: false,
+      message: "Failed to send email, please try again later",
+    });
+  }
 
   transporter.sendMail(message, (err, info) => {
     if (err) {
       console.error(err.message);
       res.status(500);
-      return res.json({ success: false });
+      return res.json({
+        success: false,
+        message: "Failed to send email, please try again later",
+      });
     }
     console.log(`Recovery email sent: ${info.messageId}`);
     const url = nodemailer.getTestMessageUrl(info);
@@ -227,7 +266,7 @@ export const updateStatus = async (req, res) => {
       return res.json({});
     }
 
-    await UserModel.updateOne(
+    await User.updateOne(
       { username },
       {
         $set: {

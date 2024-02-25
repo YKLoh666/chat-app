@@ -13,6 +13,8 @@
 
 	let submitButton: HTMLInputElement | undefined = undefined;
 
+	let errMessage: string | undefined = undefined;
+
 	onMount(async () => {
 		try {
 			const { validated, username } = (
@@ -28,7 +30,15 @@
 
 	const handleSubmit = async () => {
 		submitButton?.toggleAttribute('disabled', true);
-		submitButton?.setAttribute('value', 'Sending email...');
+		emailRef?.toggleAttribute('disabled', true);
+		let text = 'Sending email';
+		let textLength = text.length;
+		submitButton?.setAttribute('value', text);
+		const interval = setInterval(() => {
+			if (text.length - textLength === 3) text = 'Sending email';
+			else text += '.';
+			submitButton?.setAttribute('value', text);
+		}, 700);
 
 		try {
 			const data = (
@@ -41,15 +51,19 @@
 				alert('Email sent to your inbox');
 				console.log(data);
 				url = data.mail;
+				errMessage = undefined;
 			} else {
-				console.error('Email failed to be sent, please try again later');
+				console.error(data.message);
+				errMessage = data.message;
 			}
 		} catch (error) {
 			console.log(error);
 		}
 
 		submitButton?.toggleAttribute('disabled', false);
+		clearInterval(interval);
 		submitButton?.setAttribute('value', 'Send verification email');
+		emailRef?.toggleAttribute('disabled', false);
 	};
 </script>
 
@@ -74,6 +88,11 @@
 		/>
 		<div class="form-label">Email</div>
 	</div>
+	{#if errMessage}
+		<div class="w-2/3">
+			<p class="text-red-500 text-sm mt-4 border border-red-300 p-3 py-1 rounded">{errMessage}</p>
+		</div>
+	{/if}
 	<div class="form-group">
 		<input
 			bind:this={submitButton}

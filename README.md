@@ -19,7 +19,7 @@ This project has given me a new experience of working on a programming project, 
 ## Main Functions
 
 - Token based authentication and authorization to secure API routes and server requests
-- Find user through username and start real time chat with users on the server
+- Find user through username and start real time chat with users on the website
 
 ## Tech Stack
 
@@ -76,7 +76,7 @@ Create a `.env` file in the root folder and add the following environment variab
 
 1. `NODE_ENV` "development" or "production"
 
-2. `MONGO_URI` To establish the connection to the local/atlas database server. Usually local MongoDB server is run with URI "mongodb://0.0.0.0:27017/database-name"
+2. `MONGO_URI` To establish connection to the local/atlas database server. A MongoDB database server is required, could be either local version or cloud version (MongoDB Atlas). If the database server is setup locally, usually the URI will be "mongodb://0.0.0.0:27017/database-name" Learn more of MongoDB server setup here: [Local](https://www.mongodb.com/docs/manual/installation/#std-label-tutorial-installation), [Atlas](https://www.mongodb.com/docs/atlas/getting-started/)
 
 3. `COOKIE_SECRET` A secret random string that is used to sign/unsign cookies when making API calls
 
@@ -86,7 +86,7 @@ Create a `.env` file in the root folder and add the following environment variab
 
 6. `PUBLIC_BASE_URL` The base URL where the application runs at
 
-Create another two environment variables files call `.env.development` and `.env.production`. These two files have only one environment variable in it, which is `PUBLIC_BASE_URL`, which is used to specify the base URL of the application when run in either node environment. As for running in a local environment, set both of them to "http://localhost: (port specified in .env file, eg. 5000)".
+Create another two environment variables files call `.env.development` and `.env.production`. These two files has only one environment variable in it, which is `PUBLIC_BASE_URL` that used to specifies the base URL of the application when run in either node environment. As for running in local environment, set both of it to "http://localhost:5000" (change the port number according to the one specified in .env file, no trailing slash).
 
 Start the server
 

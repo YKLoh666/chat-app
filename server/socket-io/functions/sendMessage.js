@@ -17,8 +17,6 @@ export const sendMessage = async (
   console.log(`Received message from ${socket.id}: ${message}`);
   const uid = socket.uid;
 
-  console.log(username);
-
   const { found, chatroom } = await verifyAuth(uid, chatroomid, socket);
   if (!found) {
     console.error("User is not authorized to send message in this chatroom");

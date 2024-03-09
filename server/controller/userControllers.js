@@ -95,6 +95,11 @@ export const validateUser = async (req, res) => {
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
+  if (!username || !email || !password) {
+    res.status(400);
+    return res.json({ message: "Variable in body is invalid" });
+  }
+
   const newUser = new User({
     username,
     email,
@@ -140,66 +145,156 @@ export const registerUser = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
-  const userFile = await User.findOne({ email });
-
-  if (!userFile) {
-    return res.json({ success: false, message: "User not found" });
+  if (!email) {
+    res.status(400);
+    return res.json({ message: "Variable in body is invalid" });
   }
-
-  const resetPasswordInstance = await PasswordResetModel.findOne({
-    user: userFile._id,
-  });
-
-  if (resetPasswordInstance) {
-    return res.json({
-      success: false,
-      message: "Password reset email has been sent",
-    });
-  }
-
-  const token = createRandomString(30);
-
-  const message = {
-    from: "ykdev.noreply <noreply@ykdev.com>",
-    to: email,
-    subject: "Reset your password",
-    html:
-      "<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>" +
-      "<p>Please click on the following link, or paste this into your browser to complete the process:</p>" +
-      `<a href="${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}">${process.env.PUBLIC_BASE_URL}/resetpassword?token=${token}</a>` +
-      "<p>The link will be not effective after 1 hour, please reset your password in the interval.</p>" +
-      "<p>If you are not the one who request for the password reset, please ignore this email.</p>",
-  };
-
-  const passwordResetFile = new PasswordResetModel({
-    user: userFile._id,
-    token,
-  });
 
   try {
+    const userFile = await User.findOne({ email });
+
+    if (!userFile) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    const resetPasswordInstance = await PasswordResetModel.findOne({
+      user: userFile._id,
+    });
+
+    if (resetPasswordInstance) {
+      if (
+        new Date().getTime() -
+          new Date(resetPasswordInstance.createdAt).getTime() >
+        24 * 60 * 60 * 1000
+      ) {
+        await PasswordResetModel.deleteOne({ _id: resetPasswordInstance._id });
+      } else
+        return res.json({
+          success: false,
+          message: "Password reset email has been sent",
+        });
+    }
+
+    const token = createRandomString(30);
+
+    const message = {
+      from: "ykdev.noreply <noreply@ykdev.com>",
+      to: email,
+      subject: "Reset your password",
+      html:
+        "<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>" +
+        "<p>Please click on the following link, or paste this into your browser to complete the process:</p>" +
+        `<a href="${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}">${process.env.PUBLIC_BASE_URL}/resetpassword?token=${token}</a>` +
+        "<p>The link will be not effective after 1 hour, please reset your password in the interval.</p>" +
+        "<p>If you are not the one who request for the password reset, please ignore this email.</p>",
+    };
+
+    const passwordResetFile = new PasswordResetModel({
+      user: userFile._id,
+      token,
+    });
+
     await passwordResetFile.save();
+
+    transporter.sendMail(message, (err, info) => {
+      if (err) {
+        console.error(err.message);
+        res.status(500);
+        return res.json({
+          success: false,
+          message: "Failed to send email, please try again later",
+        });
+      }
+      console.log(`Recovery email sent: ${info.messageId}`);
+      const url = nodemailer.getTestMessageUrl(info);
+      console.log(`Preview URL: ${url}`);
+      res.json({ success: true, mail: url });
+    });
   } catch (error) {
+    console.error(err);
     res.status(500);
     return res.json({
       success: false,
       message: "Failed to send email, please try again later",
     });
   }
+};
 
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.error(err.message);
-      res.status(500);
+export const validateResetToken = async (req, res) => {
+  const auth = req.headers.authorization;
+  if (!auth.startsWith("Bearer ")) {
+    res.status(400).end();
+  }
+  const token = auth.substring(7);
+
+  try {
+    const resetTokenFile = await PasswordResetModel.findOne({ token }).populate(
+      {
+        path: "user",
+        select: { _id: 0, username: 1 },
+      }
+    );
+
+    if (!resetTokenFile) res.status(404).end();
+    else if (
+      new Date().getTime() - new Date(resetTokenFile.createdAt).getTime() >
+      24 * 60 * 60 * 1000
+    ) {
+      return res.json({ success: false, message: "Token expired" });
+    } else {
       return res.json({
-        success: false,
-        message: "Failed to send email, please try again later",
+        success: true,
+        username: resetTokenFile.user.username,
       });
     }
-    console.log(`Recovery email sent: ${info.messageId}`);
-    const url = nodemailer.getTestMessageUrl(info);
-    console.log(`Preview URL: ${url}`);
-    res.json({ success: true, mail: url });
-  });
+  } catch (err) {
+    console.error(err);
+    res.status(500);
+    return res.json({ success: false, message: "Internal error" });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const auth = req.headers.authorization;
+  if (!auth.startsWith("Bearer ")) {
+    return res.json({ success: false, message: "Invalid token" });
+  }
+  const token = auth.substring(7);
+
+  const { username, password } = req.body;
+  if (!username || !password) {
+    res.status(400);
+    return res.json({ message: "Variable in body is invalid" });
+  }
+
+  try {
+    const resetTokenFile = await PasswordResetModel.findOne({ token }).populate(
+      {
+        path: "user",
+        select: { _id: 0, username: 1 },
+      }
+    );
+    if (username !== resetTokenFile.user.username) {
+      return res.json({
+        success: false,
+        message: "Token not belongs to the user",
+      });
+    }
+
+    const userFile = await User.findOne({ username });
+
+    userFile.password = password;
+
+    await userFile.save();
+
+    await PasswordResetModel.deleteOne({ _id: resetTokenFile._id });
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500);
+    return res.json({ success: false, message: "Internal Error" });
+  }
 };
 
 export const loginUser = async (req, res) => {
@@ -208,6 +303,12 @@ export const loginUser = async (req, res) => {
   }
 
   const { uid, password, rmbMe } = req.body;
+
+  if (!uid || !password) {
+    res.status(400);
+    return res.json({ message: "Variable in body is invalid" });
+  }
+
   try {
     let user;
     if (isEmail(uid)) {

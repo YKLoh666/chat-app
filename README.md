@@ -72,19 +72,21 @@ Go back to the root folder, install the dependencies for the backend application
   npm install
 ```
 
-Create a `.env` file at the root folder and add the following environment variables. [Syntax here](https://blog.bitsrc.io/a-gentle-introduction-to-env-files-9ad424cc5ff4#:~:text=SECRET_1%3D%E2%80%9D924a137562fc4833be60250e8d7c1568%22%0ASECRET_2%3D%E2%80%9Dcb5000d27c3047e59350cc751ec3f0c6%22)
+Create a `.env` file in the root folder and add the following environment variables. [Syntax here](https://blog.bitsrc.io/a-gentle-introduction-to-env-files-9ad424cc5ff4#:~:text=SECRET_1%3D%E2%80%9D924a137562fc4833be60250e8d7c1568%22%0ASECRET_2%3D%E2%80%9Dcb5000d27c3047e59350cc751ec3f0c6%22)
 
 1. `NODE_ENV` "development" or "production"
 
-2. `MONGO_URI` To establish connection to the local/atlas database server. Usually local mongodb server is run with URI "mongodb://0.0.0.0:27017/database-name"
+2. `MONGO_URI` To establish the connection to the local/atlas database server. Usually local MongoDB server is run with URI "mongodb://0.0.0.0:27017/database-name"
 
-3. `COOKIE_SECRET` A secret random string that used to sign/unsign cookies when making API calls
+3. `COOKIE_SECRET` A secret random string that is used to sign/unsign cookies when making API calls
 
-4. `JWT_PRIVATE_KEY` A secret random string that used to sign/unsign JWT token that can be used as user's credential
+4. `JWT_PRIVATE_KEY` A secret random string that is used to sign/unsign a JWT token that can be used as the user's credential
 
-5. `PORT` The port where the application run at
+5. `PORT` The port where the application runs at
 
-Create another two environment variables files call `.env.development` and `.env.production`. These two files has only one environment variable in it, which is `PUBLIC_BASE_URL`, which is used to specifies the base URL of the application when run in either node environment. As for running in local environment, set both of it to "http://localhost: (port specified in .env file, eg. 5000)".
+6. `PUBLIC_BASE_URL` The base URL where the application runs at
+
+Create another two environment variables files call `.env.development` and `.env.production`. These two files have only one environment variable in it, which is `PUBLIC_BASE_URL`, which is used to specify the base URL of the application when run in either node environment. As for running in a local environment, set both of them to "http://localhost: (port specified in .env file, eg. 5000)".
 
 Start the server
 
@@ -96,10 +98,10 @@ npm start
 
 - Authentication and Authorization
   - Forgot password and email verification
-  - New authentication method such as OAuth and one time password(OTP)
-  - Token rotation and refresh Token
+  - New authentication methods such as OAuth and one-time password(OTP)
+  - Token rotation and Refresh Token
 - Chatting function
   - Edit/Unsend message
-  - Group Chat implementation
+  - Group Chat Implementation
   - Browser Notification
   - Image CDN for profile picture

@@ -2,7 +2,7 @@ import { PUBLIC_BASE_URL } from '$env/static/public';
 import { type ChatroomFromDB } from '$lib/stores/ContactListStore';
 import type { Message } from '$lib/stores/MessageStore';
 import { error } from '@sveltejs/kit';
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
 export const load = (async ({ params, fetch }) => {
 	try {
@@ -20,4 +20,4 @@ export const load = (async ({ params, fetch }) => {
 		console.error(err);
 	}
 	error(404, { message: 'Messages not found' });
-}) satisfies PageLoad;
+}) satisfies PageServerLoad;

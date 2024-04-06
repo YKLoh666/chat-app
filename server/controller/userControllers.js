@@ -316,6 +316,7 @@ export const loginUser = async (req, res) => {
     } else {
       user = await User.findOne({ username: uid });
     }
+    if (!user) throw new Error(`Couldn't find user ${uid}.`);
 
     if (await bcrypt.compare(password, user.password)) {
       if (rmbMe) {

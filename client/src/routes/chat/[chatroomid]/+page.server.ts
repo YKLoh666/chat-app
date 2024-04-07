@@ -3,15 +3,19 @@ import { type ChatroomFromDB } from '$lib/stores/ContactListStore';
 import type { Message } from '$lib/stores/MessageStore';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { dev } from '$app/environment';
 
 export const load = (async ({ params, fetch }) => {
 	try {
-		const response = await fetch(`${PUBLIC_BASE_URL}/api/messages/${params.chatroomid}?skip=0`, {
-			credentials: 'include'
-		});
+		const response = await fetch(
+			`${dev && PUBLIC_BASE_URL}/api/messages/${params.chatroomid}?skip=0`,
+			{
+				credentials: 'include'
+			}
+		);
 		const { messages }: { messages: Message[] | boolean } = await response.json();
 		const { chatroom }: { chatroom: ChatroomFromDB } = await (
-			await fetch(`${PUBLIC_BASE_URL}/api/chatrooms/${params.chatroomid}`, {
+			await fetch(`${dev && PUBLIC_BASE_URL}/api/chatrooms/${params.chatroomid}`, {
 				credentials: 'include'
 			})
 		).json();

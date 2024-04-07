@@ -1,11 +1,12 @@
 import { PUBLIC_BASE_URL } from '$env/static/public';
 import type { PageServerLoad } from './$types';
+import { dev } from '$app/environment';
 
 export const load = (async ({ url, fetch }) => {
 	console.log('first');
 	const token = url.searchParams.get('token');
 
-	const response = await fetch(`${PUBLIC_BASE_URL}/api/users/validate-reset-token`, {
+	const response = await fetch(`${dev && PUBLIC_BASE_URL}/api/users/validate-reset-token`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

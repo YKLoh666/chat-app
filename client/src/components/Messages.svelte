@@ -6,6 +6,7 @@
 	import axios from 'axios';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
 	import { writableChatroom } from '$lib/stores/ChatroomStore';
+	import { dev } from '$app/environment';
 	$: messages = $writableMessages;
 	let sentinel: HTMLDivElement;
 
@@ -31,7 +32,9 @@
 					isLoading = true;
 					const data: { messages: MessageType[] } = (
 						await axios.get(
-							`${PUBLIC_BASE_URL}/api/messages/${$page.params.chatroomid}?skip=${messages.length}`,
+							`${dev && PUBLIC_BASE_URL}/api/messages/${$page.params.chatroomid}?skip=${
+								messages.length
+							}`,
 							{
 								withCredentials: true
 							}

@@ -7,9 +7,11 @@
 	import { socket } from '$lib/stores/SocketStore';
 	import { writableUsername } from '$lib/stores/UserStore';
 	import Searchbox from '../../components/Searchbox.svelte';
+	import { dev } from '$app/environment';
+
 	onMount(async () => {
 		const { validated, username } = await (
-			await fetch(`${PUBLIC_BASE_URL}/api/users/validate`, { credentials: 'include' })
+			await fetch(`${dev && PUBLIC_BASE_URL}/api/users/validate`, { credentials: 'include' })
 		).json();
 		if (!validated) {
 			goto(`/?redirect=${$page.url.pathname}${$page.url.search}`, {

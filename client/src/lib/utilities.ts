@@ -1,4 +1,5 @@
 import { PUBLIC_BASE_URL } from '$env/static/public';
+import { dev } from '$app/environment';
 
 export const getTimeDifference = (currentDate: Date, receivedDate: Date): string => {
 	const diffInMs = currentDate.getTime() - receivedDate.getTime();
@@ -19,7 +20,7 @@ export const search = async (searchString: string, skip: number) => {
 	try {
 		const { users } = await (
 			await fetch(
-				`${PUBLIC_BASE_URL}/api/users/search?search=${encodeURIComponent(
+				`${dev && PUBLIC_BASE_URL}/api/users/search?search=${encodeURIComponent(
 					searchString
 				)}&skip=${skip}`,
 				{

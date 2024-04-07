@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { dev } from '$app/environment';
 
 	export let data: PageData;
 
@@ -29,7 +30,7 @@
 		}
 
 		try {
-			const response = await fetch(`${PUBLIC_BASE_URL}/api/users/reset-password`, {
+			const response = await fetch(`${dev && PUBLIC_BASE_URL}/api/users/reset-password`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

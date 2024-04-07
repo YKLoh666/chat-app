@@ -7,6 +7,7 @@
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
 	import { page } from '$app/stores';
+	import { dev } from '$app/environment';
 
 	$: uid = '';
 	$: password = '';
@@ -17,7 +18,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await axios.get(`${PUBLIC_BASE_URL}/api/users/validate`, {
+			const response = await axios.get(`${dev && PUBLIC_BASE_URL}/api/users/validate`, {
 				withCredentials: true
 			});
 			const { validated } = response.data;
@@ -35,7 +36,7 @@
 		try {
 			const { success, message } = (
 				await axios.post(
-					`${PUBLIC_BASE_URL}/api/users/login`,
+					`${dev && PUBLIC_BASE_URL}/api/users/login`,
 					{
 						uid,
 						password,

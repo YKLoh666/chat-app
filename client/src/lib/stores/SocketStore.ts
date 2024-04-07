@@ -6,8 +6,9 @@ import type { Message } from './MessageStore';
 import { PUBLIC_BASE_URL } from '$env/static/public';
 import { page } from '$app/stores';
 import { writableContactList } from './ContactListStore';
+import { dev } from '$app/environment';
 
-export const socket = io(PUBLIC_BASE_URL, { withCredentials: true });
+export const socket = io(dev ? PUBLIC_BASE_URL : get(page).url.origin, { withCredentials: true });
 
 export const writableSocket = writable(socket);
 

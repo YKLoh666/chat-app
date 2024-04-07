@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import axios from 'axios';
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
 	import { socket } from '$lib/stores/SocketStore';
+	import { dev } from '$app/environment';
 
 	export let route: string;
 
 	const logout = async () => {
 		try {
 			await axios.post(
-				`${PUBLIC_BASE_URL}/api/users/logout`,
+				`${dev && PUBLIC_BASE_URL}/api/users/logout`,
 				{ username: $writableUsername },
 				{ withCredentials: true }
 			);

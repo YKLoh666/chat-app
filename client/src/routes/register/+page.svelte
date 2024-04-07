@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { writableUsername } from '$lib/stores/UserStore';
 	import { PUBLIC_BASE_URL } from '$env/static/public';
+	import { dev } from '$app/environment';
 
 	$: username = '';
 	$: email = '';
@@ -17,7 +18,7 @@
 	onMount(async () => {
 		try {
 			const { validated, username } = (
-				await axios.get(`${PUBLIC_BASE_URL}/api/users/validate`, { withCredentials: true })
+				await axios.get(`${dev && PUBLIC_BASE_URL}/api/users/validate`, { withCredentials: true })
 			).data;
 			if (validated) await goto('/chat', { invalidateAll: true, replaceState: true });
 			writableUsername.set(username);
@@ -31,7 +32,7 @@
 		try {
 			const data = (
 				await axios.post(
-					`${PUBLIC_BASE_URL}/api/users/register`,
+					`${dev && PUBLIC_BASE_URL}/api/users/register`,
 					{
 						username,
 						email,

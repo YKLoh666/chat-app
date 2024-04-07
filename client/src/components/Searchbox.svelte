@@ -4,6 +4,7 @@
 	import { PUBLIC_BASE_URL } from '$env/static/public';
 	import axios from 'axios';
 	import { goto } from '$app/navigation';
+	import { dev } from '$app/environment';
 
 	let searchString: string = '';
 	let lastSearch: string = '';
@@ -42,7 +43,7 @@
 			const {
 				chatroom: { _id }
 			} = (
-				await axios.get(`${PUBLIC_BASE_URL}/api/chatrooms/duo?username=${username}`, {
+				await axios.get(`${dev && PUBLIC_BASE_URL}/api/chatrooms/duo?username=${username}`, {
 					withCredentials: true
 				})
 			).data;

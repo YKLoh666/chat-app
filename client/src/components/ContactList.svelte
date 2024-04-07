@@ -9,6 +9,7 @@
 	import { PUBLIC_BASE_URL } from '$env/static/public';
 	import axios from 'axios';
 	import { writableUsername } from '$lib/stores/UserStore';
+	import { dev } from '$app/environment';
 
 	$: contactList = $writableContactList;
 
@@ -23,7 +24,7 @@
 					console.log('User scrolled to the top');
 					isLoading = true;
 					const data: { chatrooms: ChatroomFromDB[] } = (
-						await axios.get(`${PUBLIC_BASE_URL}/api/chatrooms?skip=${contactList.length}`, {
+						await axios.get(`${dev && PUBLIC_BASE_URL}/api/chatrooms?skip=${contactList.length}`, {
 							withCredentials: true
 						})
 					).data;

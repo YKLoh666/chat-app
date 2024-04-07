@@ -1,7 +1,8 @@
 import { PUBLIC_BASE_URL } from '$env/static/public';
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
 export const load = (async ({ url, fetch }) => {
+	console.log('first');
 	const token = url.searchParams.get('token');
 
 	const response = await fetch(`${PUBLIC_BASE_URL}/api/users/validate-reset-token`, {
@@ -9,7 +10,8 @@ export const load = (async ({ url, fetch }) => {
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${token}`
-		}
+		},
+		credentials: 'include'
 	});
 
 	if (response.ok) {
@@ -19,4 +21,4 @@ export const load = (async ({ url, fetch }) => {
 		}
 		return { success: true, username, token };
 	} else return { success: false, message: 'Invalid token' };
-}) satisfies PageLoad;
+}) satisfies PageServerLoad;

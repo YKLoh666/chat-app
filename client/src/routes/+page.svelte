@@ -62,11 +62,26 @@
 	};
 </script>
 
-<div class="p-3 mx-auto mt-16 container block items-center lg:flex">
-	<div class="w-1/2 m-3 p-4 hidden lg:block"></div>
-	<div class="w-full mx-auto m-3 p-4 lg:w-1/2 lg:mx-3">
+<div class="p-3 mx-auto mt-16 container block items-center justify-around lg:flex">
+	<div class="xl:w-1/3 lg:w-1/2 m-3 hidden lg:flex flex-col justify-between h-96">
+		<div class="flex flex-row justify-around items-center pt-12">
+			<span class="text-sky-500 text-8xl p-3 font-semibold">Chat</span>
+			<span>
+				<h1 class="text-5xl p-3 py-1">Anywhere,</h1>
+				<h1 class="text-5xl p-3 py-1">Anytime</h1>
+			</span>
+		</div>
+		<div class="self-end pb-4">
+			Portfolio Project by <a
+				href="https://www.github.com/ykloh666"
+				class="underline text-blue-700 hover:no-underline"
+				target="_blank">YKLoh666</a
+			>
+		</div>
+	</div>
+	<div class="w-full mx-auto m-3 p-4 xl:w-2/3 lg:w-1/2 lg:mx-3">
 		<form
-			class="mx-auto w-full flex flex-col items-center border rounded p-0 pt-3 pb-10 shadow-lg lg:p-6 lg:w-4/6"
+			class="mx-auto w-full flex flex-col items-center border rounded p-0 pt-3 pb-10 shadow-lg lg:p-6 lg:w-5/6"
 			on:submit|preventDefault={login}
 		>
 			<h1 class="text-2xl mb-4 mt-0">Login</h1>

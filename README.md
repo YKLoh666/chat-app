@@ -97,7 +97,7 @@ npm start
 ## Roadmap
 
 - Authentication and Authorization
-  - Forgot password and email verification
+  - Email verification
   - New authentication methods such as OAuth and one-time password(OTP)
   - Token rotation and Refresh Token
 - Chatting function

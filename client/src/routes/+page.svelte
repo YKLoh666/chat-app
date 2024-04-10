@@ -18,7 +18,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await axios.get(`${dev && PUBLIC_BASE_URL}/api/users/validate`, {
+			const response = await axios.get(`${dev ? PUBLIC_BASE_URL : ''}/api/users/validate`, {
 				withCredentials: true
 			});
 			const { validated } = response.data;
@@ -36,7 +36,7 @@
 		try {
 			const { success, message } = (
 				await axios.post(
-					`${dev && PUBLIC_BASE_URL}/api/users/login`,
+					`${dev ? PUBLIC_BASE_URL : ''}/api/users/login`,
 					{
 						uid,
 						password,

@@ -20,7 +20,7 @@ export const search = async (searchString: string, skip: number) => {
 	try {
 		const { users } = await (
 			await fetch(
-				`${dev && PUBLIC_BASE_URL}/api/users/search?search=${encodeURIComponent(
+				`${dev ? PUBLIC_BASE_URL : ''}/api/users/search?search=${encodeURIComponent(
 					searchString
 				)}&skip=${skip}`,
 				{

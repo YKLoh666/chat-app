@@ -10,7 +10,7 @@
 	const logout = async () => {
 		try {
 			await axios.post(
-				`${dev && PUBLIC_BASE_URL}/api/users/logout`,
+				`${dev ? PUBLIC_BASE_URL : ''}/api/users/logout`,
 				{ username: $writableUsername },
 				{ withCredentials: true }
 			);

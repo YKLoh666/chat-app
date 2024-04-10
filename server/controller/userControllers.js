@@ -79,7 +79,6 @@ export const validateUser = async (req, res) => {
       req.signedCookies.jwt,
       process.env.JWT_PRIVATE_KEY
     );
-
     const user = await User.findById(uid, { username: 1 });
 
     if (user) return res.json({ validated: true, username: user.username });
@@ -184,7 +183,7 @@ export const forgotPassword = async (req, res) => {
       html:
         "<p>You are receiving this email because you (or someone else) have requested the reset of the password for your account.</p>" +
         "<p>Please click on the following link, or paste this into your browser to complete the process:</p>" +
-        `<a href="${window.location.origin}/reset-password?token=${token}">${window.location.origin}/resetpassword?token=${token}</a>` +
+        `<a href="${process.env.PUBLIC_BASE_URL}/reset-password?token=${token}">${process.env.PUBLIC_BASE_URL}/resetpassword?token=${token}</a>` +
         "<p>The link will be not effective after 1 hour, please reset your password in the interval.</p>" +
         "<p>If you are not the one who request for the password reset, please ignore this email.</p>",
     };
@@ -211,7 +210,7 @@ export const forgotPassword = async (req, res) => {
       res.json({ success: true, mail: url });
     });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     res.status(500);
     return res.json({
       success: false,

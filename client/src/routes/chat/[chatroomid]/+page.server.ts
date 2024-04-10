@@ -8,14 +8,14 @@ import { dev } from '$app/environment';
 export const load = (async ({ params, fetch }) => {
 	try {
 		const response = await fetch(
-			`${dev && PUBLIC_BASE_URL}/api/messages/${params.chatroomid}?skip=0`,
+			`${dev ? PUBLIC_BASE_URL : ''}/api/messages/${params.chatroomid}?skip=0`,
 			{
 				credentials: 'include'
 			}
 		);
 		const { messages }: { messages: Message[] | boolean } = await response.json();
 		const { chatroom }: { chatroom: ChatroomFromDB } = await (
-			await fetch(`${dev && PUBLIC_BASE_URL}/api/chatrooms/${params.chatroomid}`, {
+			await fetch(`${dev ? PUBLIC_BASE_URL : ''}/api/chatrooms/${params.chatroomid}`, {
 				credentials: 'include'
 			})
 		).json();

@@ -11,8 +11,10 @@
 
 	onMount(async () => {
 		const { validated, username } = await (
-			await fetch(`${dev && PUBLIC_BASE_URL}/api/users/validate`, { credentials: 'include' })
+			await fetch(`${dev ? PUBLIC_BASE_URL : ''}/api/users/validate`, { credentials: 'include' })
 		).json();
+		console.log(validated, username);
+
 		if (!validated) {
 			goto(`/?redirect=${$page.url.pathname}${$page.url.search}`, {
 				invalidateAll: true,

@@ -24,9 +24,12 @@
 					console.log('User scrolled to the top');
 					isLoading = true;
 					const data: { chatrooms: ChatroomFromDB[] } = (
-						await axios.get(`${dev && PUBLIC_BASE_URL}/api/chatrooms?skip=${contactList.length}`, {
-							withCredentials: true
-						})
+						await axios.get(
+							`${dev ? PUBLIC_BASE_URL : ''}/api/chatrooms?skip=${contactList.length}`,
+							{
+								withCredentials: true
+							}
+						)
 					).data;
 
 					if (!data.chatrooms.length) observer.disconnect();

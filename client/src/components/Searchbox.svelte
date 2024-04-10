@@ -43,7 +43,7 @@
 			const {
 				chatroom: { _id }
 			} = (
-				await axios.get(`${dev && PUBLIC_BASE_URL}/api/chatrooms/duo?username=${username}`, {
+				await axios.get(`${dev ? PUBLIC_BASE_URL : ''}/api/chatrooms/duo?username=${username}`, {
 					withCredentials: true
 				})
 			).data;

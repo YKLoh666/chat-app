@@ -19,7 +19,9 @@
 	onMount(async () => {
 		try {
 			const { validated, username } = (
-				await axios.get(`${dev && PUBLIC_BASE_URL}/api/users/validate`, { withCredentials: true })
+				await axios.get(`${dev ? PUBLIC_BASE_URL : ''}/api/users/validate`, {
+					withCredentials: true
+				})
 			).data;
 			if (validated) await goto('/chat', { invalidateAll: true, replaceState: true });
 			writableUsername.set(username);
@@ -43,7 +45,7 @@
 
 		try {
 			const data = (
-				await axios.post(`${dev && PUBLIC_BASE_URL}/api/users/forgotpassword`, {
+				await axios.post(`${dev ? PUBLIC_BASE_URL : ''}/api/users/forgotpassword`, {
 					email
 				})
 			).data;

@@ -38,7 +38,7 @@ This project has given me a new experience of working on a programming project, 
 
 **Hosting:**
 
-- [Render](https://render.com)
+- [Digital Ocean](https://digitalocean.com)
 - [MongoDB Atlas](https://www.mongodb.com/atlas)
 - [Docker](https://www.docker.com)
 

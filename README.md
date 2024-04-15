@@ -38,8 +38,9 @@ This project has given me a new experience of working on a programming project, 
 
 **Hosting:**
 
-- [Render](https://render.com)
+- [Digital Ocean](https://digitalocean.com)
 - [MongoDB Atlas](https://www.mongodb.com/atlas)
+- [Docker](https://www.docker.com)
 
 ## Run Locally
 
@@ -86,7 +87,7 @@ Create a `.env` file in the root folder and add the following environment variab
 
 6. `PUBLIC_BASE_URL` The base URL where the application runs at
 
-Create another two environment variables files call `.env.development` and `.env.production`. These two files has only one environment variable in it, which is `PUBLIC_BASE_URL` that used to specifies the base URL of the application when run in either node environment. As for running in local environment, set both of it to "http://localhost:5000" (change the port number according to the one specified in .env file, no trailing slash).
+Create another two environment variables files call `.env.development` and `.env.production`. These two files has only one environment variable in it, which is `PUBLIC_BASE_URL` that used to specifies the base URL of the application when run in either node environment. As for running in local environment, set both of it to "http://localhost:5000" (change the port number according to the one specified in the .env file, no trailing slash).
 
 Start the server
 

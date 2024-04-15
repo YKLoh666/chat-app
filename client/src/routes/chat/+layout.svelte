@@ -13,7 +13,6 @@
 		const { validated, username } = await (
 			await fetch(`${dev ? PUBLIC_BASE_URL : ''}/api/users/validate`, { credentials: 'include' })
 		).json();
-		console.log(validated, username);
 
 		if (!validated) {
 			goto(`/?redirect=${$page.url.pathname}${$page.url.search}`, {
@@ -31,13 +30,14 @@
 	<meta name="robots" content="noindex nofollow" />
 </svelte:head>
 
-<main class="h-[90vh] min-w-[320px] box-border flex">
+<Searchbox boxClassName="w-[99%] flex lg:hidden" inputClassName="w-11/12" />
+<main class="lg:h-[90vh] min-w-[320px] box-border flex h-[80vh]">
 	<div class="h-full border w-20 box-border flex-grow-0 flex-shrink-0 lg:w-96 flex flex-col">
 		<h1 class="text-2xl font-bold p-4 pb-0 hidden self-start lg:block">Chats</h1>
-		<Searchbox />
+		<Searchbox boxClassName="w-11/12 hidden lg:flex" inputClassName="hidden lg:block w-full" />
 		<ContactList />
 	</div>
-	<div class="flex flex-col h-full w-full">
+	<div class="flex flex-col h-full w-full border-t">
 		<slot />
 	</div>
 </main>

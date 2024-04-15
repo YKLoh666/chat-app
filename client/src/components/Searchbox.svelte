@@ -6,6 +6,9 @@
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
 
+	export let boxClassName: string;
+	export let inputClassName: string;
+
 	let searchString: string = '';
 	let lastSearch: string = '';
 	let result: { username: string; active: boolean }[] | boolean | number = -1;
@@ -56,19 +59,22 @@
 	};
 </script>
 
-<div class="m-3 w-11/12 relative hidden justify-center lg:flex flex-col">
-	<SearchIcon />
-	<input
-		type="text"
-		class="w-full p-1 pl-8 rounded-md border self-center hidden lg:block"
-		placeholder="Search"
-		bind:value={searchString}
-		on:focus={focused}
-		on:blur={blurred}
-	/>
+<div class="m-3 relative justify-center flex-col {boxClassName}">
+	<div class="flex flex-row">
+		<SearchIcon />
+		<input
+			type="text"
+			class="p-1 pl-8 rounded-md border self-center {inputClassName}"
+			placeholder="Search"
+			bind:value={searchString}
+			on:focus={focused}
+			on:blur={blurred}
+		/>
+	</div>
 	<div
-		class="absolute top-[2.1rem] z-10 bg-white w-full border p-3 rounded-b-lg {!shouldShow &&
-			'hidden'} max-h-[60vh] overflow-y-auto"
+		class="absolute top-[2.1rem] z-10 bg-white w-full border p-3 rounded-b-lg max-h-[60vh] overflow-y-auto {!shouldShow
+			? 'hidden'
+			: ''} "
 	>
 		{#if !result}
 			<p>Server error. Failed to fetch result.</p>
@@ -80,7 +86,7 @@
 			{#each result as user}
 				<!-- Show profile picture, username and active status -->
 				<button
-					class="w-full p-3 rounded-md hidden lg:flex justify-between items-center hover:bg-gray-100"
+					class="w-full p-3 rounded-md flex justify-between items-center hover:bg-gray-100"
 					on:click={() => navigate(user.username)}
 					on:focus={focused}
 					on:blur={blurred}

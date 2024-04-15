@@ -45,7 +45,6 @@
 			).data;
 
 			if (data.success) {
-				alert('Successfully registered user.');
 				location.href = '/chat';
 			} else {
 				console.error(data.message);

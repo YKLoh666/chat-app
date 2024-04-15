@@ -21,7 +21,6 @@
 			const observer = new IntersectionObserver(async (entries) => {
 				const firstEntry = entries[0];
 				if (firstEntry.isIntersecting && contactList.length && !isLoading) {
-					console.log('User scrolled to the top');
 					isLoading = true;
 					const data: { chatrooms: ChatroomFromDB[] } = (
 						await axios.get(

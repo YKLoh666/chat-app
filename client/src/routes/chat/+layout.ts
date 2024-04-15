@@ -9,7 +9,6 @@ export const load = (async ({ fetch, url }) => {
 		const { validated, username } = await (
 			await fetch(`${dev ? PUBLIC_BASE_URL : ''}/api/users/validate`, { credentials: 'include' })
 		).json();
-		console.log(validated, username);
 
 		// redirect cannot be inside try/catch block
 		if (!validated) redirect(307, `/?redirect=${url.pathname}${url.search}`);

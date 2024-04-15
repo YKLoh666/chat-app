@@ -28,7 +28,6 @@
 			const observer = new IntersectionObserver(async (entries) => {
 				const firstEntry = entries[0];
 				if (firstEntry.isIntersecting && messages.length && !isLoading) {
-					console.log('User scrolled to the top');
 					isLoading = true;
 					const data: { messages: MessageType[] } = (
 						await axios.get(

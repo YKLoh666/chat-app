@@ -105,4 +105,3 @@ npm start
   - Edit/Unsend message
   - Group Chat Implementation
   - Browser Notification
-  - Image CDN for profile picture

@@ -2,6 +2,8 @@
 
 This is an portfolio project on creating a full stack chatting web application.
 
+Link to application: [https://chatapp.yukhai666.me/](https://chatapp.yukhai666.me/)
+
 ## Table of Content
 
 - [Introduction](#introduction)
